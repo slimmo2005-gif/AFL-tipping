@@ -27,10 +27,26 @@
   <p class="subtitle mb-0">Track who called the top 10 best — updated each round</p>
 </div></div>
 <div class="container">
-  <div class="sync-banner mb-4">
-    <i class="bi bi-cloud me-1"></i>
-    <strong>Shared data:</strong> Everyone sees the same scores from <code>data/store.json</code>.
-    After editing, use <strong>Download store.json</strong> and commit to GitHub.
+  <div class="card mb-4" id="githubSyncCard">
+    <div class="card-header"><i class="bi bi-github me-2"></i>Sync to GitHub (one-time setup)</div>
+    <div class="card-body">
+      <p class="small text-muted mb-2">
+        Create a <a href="https://github.com/settings/tokens/new?description=AFL%20Tipping&scopes=repo" target="_blank" rel="noopener">fine-grained token</a>
+        for repo <strong>AFL-tipping</strong> with <em>Contents: Read and write</em>, then paste it here.
+        It stays in this browser only.
+      </p>
+      <div class="row g-2 align-items-end">
+        <div class="col-md-8">
+          <label for="githubToken" class="form-label fw-semibold">GitHub token</label>
+          <input type="password" class="form-control" id="githubToken" autocomplete="off" placeholder="github_pat_… or ghp_…">
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button type="button" class="btn btn-afl flex-grow-1" id="saveGitHubToken">Save token</button>
+          <button type="button" class="btn btn-outline-secondary" id="clearGitHubToken" title="Remove token">Clear</button>
+        </div>
+      </div>
+      <div id="githubTokenStatus" class="small mt-2"></div>
+    </div>
   </div>
   <div class="row g-4">
     <div class="col-md-6">

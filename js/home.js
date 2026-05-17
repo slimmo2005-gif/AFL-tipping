@@ -9,8 +9,10 @@ import {
   predictionCount,
   downloadStoreJson,
 } from './storage.js';
+import { hasGitHubToken, pushStoreToGitHub, initGitHubSettings } from './github.js';
 
 initNav('index');
+initGitHubSettings();
 
 const store = await loadStore();
 const participants = getParticipants(store);
@@ -31,7 +33,9 @@ statusEl.innerHTML = participants
     return `<div class="d-flex align-items-center mb-3">
       <div class="flex-grow-1"><strong>${p.name}</strong></div>${badge}</div>`;
   })
-  .join('');
+  .join('')
+  .replaceAll('<div', '<div')
+  .replaceAll('</div>', '</div>'.replace('</div>', '</div>'));
 
 const roundsSection = document.getElementById('roundsSection');
 if (rounds.length) {
@@ -60,29 +64,39 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
     return;
   }
 
+  if (!hasGitHubToken()) {
+    renderAlerts('alerts', [
+      {
+        type: 'warning',
+        text: 'Add a GitHub token below first — that lets the app save round data straight to the repo for everyone.',
+      },
+    ]);
+    document.getElementById('githubSyncCard')?.scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+
   const btn = e.submitter;
   const defaultHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Fetching…';
 
   try {
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Fetching ladder…';
     const ladder = await fetchAflLadder();
     saveRound(store, roundNumber, ladder);
     saveStore(store);
+
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving to GitHub…';
+    await pushStoreToGitHub(store, `Update ladder for round ${roundNumber}`);
+
     renderAlerts('alerts', [
       {
         type: 'success',
-        text: `Round ${roundNumber} ladder saved (${ladder.length} teams). <a href="${assetUrl(`leaderboard.html?round=${roundNumber}`)}">View leaderboard</a>`,
+        text: `Round ${roundNumber} saved to GitHub (${ladder.length} teams). Everyone will see it after Pages rebuilds (~1 min). <a href="${assetUrl(`leaderboard.html?round=${roundNumber}`)}">View leaderboard</a>`,
       },
     ]);
-    setTimeout(() => location.reload(), 800);
+    setTimeout(() => location.reload(), 1500);
   } catch (err) {
-    renderAlerts('alerts', [
-      {
-        type: 'danger',
-        text: `Failed to fetch ladder: ${err.message}. Please try again in a moment.`,
-      },
-    ]);
+    renderAlerts('alerts', [{ type: 'danger', text: err.message }]);
     btn.disabled = false;
     btn.innerHTML = defaultHtml;
   }

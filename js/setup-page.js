@@ -9,6 +9,7 @@ import {
   savePredictions,
   downloadStoreJson,
 } from './storage.js';
+import { hasGitHubToken, pushStoreToGitHub } from './github.js';
 
 initNav('setup');
 
@@ -102,7 +103,7 @@ function buildForm() {
 
 buildForm();
 
-document.getElementById('predForm').addEventListener('submit', (e) => {
+document.getElementById('predForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const errors = [];
 
@@ -126,7 +127,31 @@ document.getElementById('predForm').addEventListener('submit', (e) => {
   }
 
   saveStore(store);
-  location.href = assetUrl('setup.html?saved=1');
+
+  const btn = e.submitter;
+  const defaultHtml = btn?.innerHTML;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
+  }
+
+  try {
+    if (hasGitHubToken()) {
+      await pushStoreToGitHub(store, 'Update predictions');
+    }
+    location.href = assetUrl('setup.html?saved=1');
+  } catch (err) {
+    renderAlerts('alerts', [
+      {
+        type: 'danger',
+        text: `${err.message} Predictions are saved in this browser — add a token on Home to sync.`,
+      },
+    ]);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = defaultHtml;
+    }
+  }
 });
 
 document.getElementById('exportBtn')?.addEventListener('click', () => downloadStoreJson(store));

@@ -127,8 +127,12 @@ export function parseLadder(round) {
   return JSON.parse(round.ladder_json);
 }
 
+export function serializeStore(store) {
+  return JSON.stringify(normalizeStore(store), null, 2);
+}
+
 export function downloadStoreJson(store) {
-  const blob = new Blob([JSON.stringify(normalizeStore(store), null, 2)], { type: 'application/json' });
+  const blob = new Blob([serializeStore(store)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'store.json';
