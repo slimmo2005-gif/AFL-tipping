@@ -41,6 +41,50 @@ body {
   font-size: 0.95rem;
 }
 
+.page-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.page-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-header-brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.slim-analytics-logo {
+  display: block;
+  height: 72px;
+  width: auto;
+  max-width: min(280px, 38vw);
+  object-fit: contain;
+}
+
+@media (max-width: 576px) {
+  .page-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header-brand {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .slim-analytics-logo {
+    height: 56px;
+    max-width: 220px;
+  }
+}
+
 .card {
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);

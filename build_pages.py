@@ -55,10 +55,17 @@ def shell(title: str, script: str, body: str) -> str:
 
 LEADERBOARD_VIEW = f"""
 <{TAG} id="viewLeaderboard">
-  <{TAG} class="page-header"><{TAG} class="container">
-    <h1><i class="bi bi-bar-chart-fill me-2"></i>Leaderboard</h1>
-    <p class="subtitle mb-0">Round-by-round scores &amp; season totals</p>
-  </{TAG}></{TAG}>
+  <{TAG} class="page-header page-header--branded">
+    <{TAG} class="container page-header-inner">
+      <{TAG} class="page-header-text">
+        <h1><i class="bi bi-bar-chart-fill me-2"></i>Leaderboard</h1>
+        <p class="subtitle mb-0">Round-by-round scores &amp; season totals</p>
+      </{TAG}>
+      <{TAG} class="page-header-brand">
+        <img src="images/slim-analytics-logo.png" alt="Slim Analytics" class="slim-analytics-logo">
+      </{TAG}>
+    </{TAG}>
+  </{TAG}>
   <{TAG} class="container" id="lbRoot"></{TAG}>
 </{TAG}>"""
 
