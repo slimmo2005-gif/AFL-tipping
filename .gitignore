@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+local/__pycache__/
+local/afl_tipping.db
+local/.write_probe

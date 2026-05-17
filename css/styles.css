@@ -1,0 +1,226 @@
+:root {
+  --afl-navy: #003087;
+  --afl-gold: #ffcc00;
+  --afl-light: #f4f6fb;
+}
+
+body {
+  background: var(--afl-light);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+  background: var(--afl-navy) !important;
+  border-bottom: 4px solid var(--afl-gold);
+}
+.navbar-brand {
+  color: var(--afl-gold) !important;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+.nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--afl-gold) !important;
+}
+
+.page-header {
+  background: var(--afl-navy);
+  color: #fff;
+  padding: 2rem 0 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 4px solid var(--afl-gold);
+}
+.page-header h1 {
+  font-weight: 700;
+}
+.page-header .subtitle {
+  color: var(--afl-gold);
+  font-size: 0.95rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 0.75rem;
+}
+.card-header {
+  background: var(--afl-navy);
+  color: #fff;
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+  font-weight: 600;
+}
+
+.btn-afl {
+  background: var(--afl-gold);
+  border: none;
+  color: var(--afl-navy);
+  font-weight: 700;
+}
+.btn-afl:hover {
+  background: #e6b800;
+  color: var(--afl-navy);
+}
+
+.btn-afl-outline {
+  border: 2px solid var(--afl-navy);
+  color: var(--afl-navy);
+  background: transparent;
+  font-weight: 600;
+}
+.btn-afl-outline:hover {
+  background: var(--afl-navy);
+  color: #fff;
+}
+
+.badge-pts {
+  background: var(--afl-gold);
+  color: var(--afl-navy);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.3em 0.65em;
+  border-radius: 0.4rem;
+}
+.badge-pts-0 {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.rank-1 {
+  color: #c8a000;
+  font-weight: 700;
+}
+.rank-2 {
+  color: #6c757d;
+  font-weight: 600;
+}
+.rank-3 {
+  color: #a05c00;
+  font-weight: 600;
+}
+
+.round-btn {
+  min-width: 60px;
+}
+.round-btn.active {
+  background: var(--afl-navy);
+  color: var(--afl-gold);
+  border-color: var(--afl-navy);
+}
+
+table thead th {
+  background: var(--afl-navy);
+  color: #fff;
+  border: none;
+}
+table tbody tr:hover {
+  background: #eef2ff;
+}
+
+.pts-exact {
+  background: #d1f0e0;
+  color: #155724;
+}
+.pts-top1 {
+  background: #fff3cd;
+  color: #856404;
+}
+.pts-partial {
+  background: #dde8ff;
+  color: #003087;
+}
+.pts-zero {
+  color: #aaa;
+}
+
+footer {
+  background: var(--afl-navy);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 1rem 0;
+  margin-top: 3rem;
+  font-size: 0.85rem;
+}
+footer a {
+  color: var(--afl-gold);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+.swatch-same {
+  background: #fff3cd;
+}
+.swatch-diff {
+  background: #cfe2ff;
+}
+.swatch-unique {
+  background: #fff;
+}
+
+.compare-table thead th {
+  background: var(--afl-navy);
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.75rem 0.5rem;
+}
+.compare-table thead th.pos-col {
+  width: 80px;
+  min-width: 60px;
+}
+.pos-cell {
+  background: #f4f6fb;
+  font-size: 1rem;
+}
+.pos-one {
+  background: #fff8e1;
+}
+.pick-cell {
+  padding: 0.6rem 0.5rem;
+  transition: background 0.15s;
+  min-width: 140px;
+}
+.cell-same {
+  background: #fff3cd;
+}
+.cell-diff {
+  background: #cfe2ff;
+}
+.cell-empty {
+  background: #f8f9fa;
+}
+.team-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: block;
+}
+.shared-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1em 0.45em;
+  border-radius: 0.3rem;
+  margin-top: 0.15rem;
+}
+.badge-same {
+  background: #e6a800;
+  color: #fff;
+}
+.badge-diff {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.sync-banner {
+  background: #fff8e1;
+  border: 1px solid #ffcc00;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
