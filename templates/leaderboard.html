@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard – AFL Tipping 2026{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-bar-chart-fill me-2"></i>Leaderboard</h1>
+    <p class="subtitle mb-0">Round-by-round scores &amp; season totals</p>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if not rounds %}
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle me-2"></i>
+      No rounds recorded yet. Go to <a href="{{ url_for('index') }}">Home</a> and click
+      <strong>Fetch AFL Ladder</strong> after the first round.
+    </div>
+  {% else %}
+
+    <!-- Round selector -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="bi bi-calendar3 me-2"></i>Select Round</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for r in rounds %}
+          <a href="{{ url_for('leaderboard', round_id=r.round_number) }}"
+             class="btn btn-sm round-btn {% if r.round_number == selected_round %}active{% else %}btn-afl-outline{% endif %}">
+            Rd {{ r.round_number }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs: Round Detail | Season History -->
+    <ul class="nav nav-tabs" id="lbTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active fw-semibold" data-bs-toggle="tab" data-bs-target="#roundDetail" type="button">
+          <i class="bi bi-list-ol me-1"></i>Round {{ selected_round }} Detail
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-semibold" data-bs-toggle="tab" data-bs-target="#seasonHistory" type="button">
+          <i class="bi bi-table me-1"></i>Season History
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content card card-body border-top-0 rounded-top-0 mb-5">
+
+      <!-- ── Round Detail Tab ── -->
+      <div class="tab-pane fade show active" id="roundDetail">
+        {% if round_data %}
+          <div class="d-flex align-items-center justify-content-between mt-3 mb-4">
+            <h5 class="fw-bold mb-0">Round {{ round_data.round.round_number }} Scores</h5>
+            <small class="text-muted">Updated: {{ round_data.round.fetched_at }}</small>
+          </div>
+
+          <!-- Summary scoreboard -->
+          <div class="row g-3 mb-4">
+            {% for pp in round_data.participants %}
+            <div class="col-6 col-md-3">
+              <div class="card text-center border-0
+                {% if loop.index0 == 0 %}bg-warning bg-opacity-25{% endif %}">
+                <div class="card-body py-3">
+                  <div class="fs-4 fw-bold
+                    {% if loop.index0 == 0 %}rank-1{% elif loop.index0 == 1 %}rank-2{% elif loop.index0 == 2 %}rank-3{% endif %}">
+                    {% if loop.index0 == 0 %}🥇{% elif loop.index0 == 1 %}🥈{% elif loop.index0 == 2 %}🥉{% else %}{{ loop.index }}{% endif %}
+                  </div>
+                  <div class="fw-semibold mt-1">{{ pp.name }}</div>
+                  <div class="display-6 fw-bold text-primary">{{ pp.total }}</div>
+                  <div class="text-muted small">points</div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Per-person top-10 breakdown -->
+          <div class="row g-4">
+            {% for pp in round_data.participants %}
+            <div class="col-12 col-lg-6">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                  <span><i class="bi bi-person me-1"></i>{{ pp.name }}</span>
+                  <span class="badge-pts">{{ pp.total }} pts</span>
+                </div>
+                <div class="card-body p-0">
+                  <table class="table table-sm mb-0">
+                    <thead>
+                      <tr>
+                        <th style="width:50px">Pred.</th>
+                        <th>Team</th>
+                        <th style="width:60px">Actual</th>
+                        <th style="width:70px" class="text-center">Points</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for d in pp.details %}
+                      <tr class="
+                        {% if d.points == 5 %}pts-top1
+                        {% elif d.points == 2 %}pts-exact
+                        {% elif d.points == 1 %}pts-partial
+                        {% else %}pts-zero{% endif %}">
+                        <td class="text-center fw-bold">
+                          {% if d.position == 1 %}🥇{% else %}{{ d.position }}{% endif %}
+                        </td>
+                        <td>{{ d.team }}</td>
+                        <td class="text-center">
+                          {% if d.actual %}#{{ d.actual }}{% else %}—{% endif %}
+                        </td>
+                        <td class="text-center">
+                          {% if d.points > 0 %}
+                            <span class="badge-pts">{{ d.points }}</span>
+                          {% else %}
+                            <span class="text-muted">0</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    <tfoot>
+                      <tr class="table-light">
+                        <td colspan="3" class="text-end fw-bold">Total</td>
+                        <td class="text-center"><span class="badge-pts">{{ pp.total }}</span></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted mt-3">No data for this round.</p>
+        {% endif %}
+      </div>
+
+      <!-- ── Season History Tab ── -->
+      <div class="tab-pane fade" id="seasonHistory">
+        <h5 class="fw-bold mt-3 mb-4">Points by Round</h5>
+        {% if season_table.rounds %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Person</th>
+                {% for r in season_table.rounds %}
+                <th class="text-center">Rd {{ r }}</th>
+                {% endfor %}
+                <th class="text-center bg-warning bg-opacity-50">Latest Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in season_table.rows %}
+              <tr>
+                <td class="fw-semibold">
+                  {% if loop.index0 == 0 %}🥇 {% elif loop.index0 == 1 %}🥈 {% elif loop.index0 == 2 %}🥉 {% endif %}
+                  {{ row.name }}
+                </td>
+                {% for score in row.scores %}
+                <td class="text-center">{{ score }}</td>
+                {% endfor %}
+                <td class="text-center fw-bold">
+                  <span class="badge-pts">{{ row.total }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted small">
+          <i class="bi bi-info-circle me-1"></i>
+          Each round score shows that person's total points against the ladder at the end of that round.
+          "Latest Total" is based on the most recent round fetched.
+        </p>
+        {% else %}
+          <p class="text-muted">No rounds recorded yet.</p>
+        {% endif %}
+      </div>
+
+    </div><!-- /tab-content -->
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Make enumerate available via a workaround – handled server-side
+</script>
+{% endblock %}

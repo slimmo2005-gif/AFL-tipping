@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}Compare Predictions – AFL Tipping 2026{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-grid-3x3-gap-fill me-2"></i>Predictions Comparison</h1>
+    <p class="subtitle mb-0">All 4 people's top 10 picks side by side — 40 selections at a glance</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Legend -->
+  <div class="card mb-4">
+    <div class="card-body py-3">
+      <h6 class="fw-bold mb-3"><i class="bi bi-palette me-2 text-primary"></i>Colour Key</h6>
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <span class="legend-swatch swatch-same"></span>
+          <span><strong>Gold</strong> — Same team at the same position (exact agreement)</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="legend-swatch swatch-diff"></span>
+          <span><strong>Blue</strong> — Team picked by someone else but at a different position</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="legend-swatch swatch-unique"></span>
+          <span><strong>White</strong> — Unique pick (nobody else chose this team)</span>
+        </div>
+      </div>
+      <p class="text-muted small mb-0 mt-2">
+        <i class="bi bi-info-circle me-1"></i>
+        The <strong>×N</strong> badge shows how many people picked that team (at same or any position).
+      </p>
+    </div>
+  </div>
+
+  {% if not has_predictions %}
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      No predictions have been entered yet.
+      <a href="{{ url_for('setup') }}" class="alert-link">Enter predictions</a> first.
+    </div>
+  {% else %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered compare-table text-center align-middle mb-4">
+      <thead>
+        <tr>
+          <th class="pos-col">Position</th>
+          {% for p in participants %}
+          <th>{{ p.name }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in matrix %}
+        <tr>
+          <td class="pos-cell fw-bold {% if row.position == 1 %}pos-one{% endif %}">
+            {% if row.position == 1 %}
+              <span title="Position 1">🥇</span>
+            {% else %}
+              {{ row.position }}
+            {% endif %}
+          </td>
+          {% for cell in row.cells %}
+          <td class="pick-cell
+            {% if cell.highlight == 'same-spot' %}cell-same
+            {% elif cell.highlight == 'diff-spot' %}cell-diff
+            {% elif cell.highlight == 'empty' %}cell-empty
+            {% endif %}">
+            {% if cell.team %}
+              <span class="team-name">{{ cell.team }}</span>
+              {% if cell.shared_count > 1 %}
+                <span class="shared-badge
+                  {% if cell.highlight == 'same-spot' %}badge-same{% else %}badge-diff{% endif %}">
+                  ×{{ cell.shared_count }}
+                </span>
+              {% endif %}
+            {% else %}
+              <span class="text-muted fst-italic small">not set</span>
+            {% endif %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Summary: Teams picked by multiple people -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-check2-all me-2"></i>Exact Agreements (same position)</div>
+        <div class="card-body">
+          {% set ns = namespace(found=false) %}
+          {% for row in matrix %}
+            {% set teams_at_pos = {} %}
+            {% for cell in row.cells %}
+              {% if cell.team %}
+                {% if cell.highlight == 'same-spot' %}
+                  {% set ns.found = true %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          {% set agreements = [] %}
+          {% for row in matrix %}
+            {% set seen = {} %}
+            {% for cell in row.cells %}
+              {% if cell.team and cell.highlight == 'same-spot' %}
+                {% if cell.team not in seen %}
+                  {% set _ = agreements.append({'pos': row.position, 'team': cell.team, 'count': cell.shared_count}) %}
+                  {% set _ = seen.update({cell.team: true}) %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          {% if agreements %}
+            <ul class="list-unstyled mb-0">
+              {% for a in agreements %}
+              <li class="mb-2">
+                <span class="legend-swatch swatch-same me-2"></span>
+                <strong>{{ a.team }}</strong> at position {{ a.pos }}
+                <span class="badge bg-warning text-dark ms-1">{{ a.count }} people</span>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No exact agreements yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-arrow-left-right me-2"></i>Shared Teams (different positions)</div>
+        <div class="card-body">
+          {% set shared = [] %}
+          {% for row in matrix %}
+            {% for cell in row.cells %}
+              {% if cell.team and cell.highlight == 'diff-spot' %}
+                {% set already = false %}
+                {% for s in shared %}{% if s.team == cell.team %}{% set already = true %}{% endif %}{% endfor %}
+                {% if not already %}
+                  {% set _ = shared.append({'team': cell.team, 'count': cell.shared_count}) %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          {% if shared %}
+            <ul class="list-unstyled mb-0">
+              {% for s in shared %}
+              <li class="mb-2">
+                <span class="legend-swatch swatch-diff me-2"></span>
+                <strong>{{ s.team }}</strong>
+                <span class="badge bg-primary ms-1">{{ s.count }} people, different spots</span>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No shared teams at different positions.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .legend-swatch {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,.15);
+    flex-shrink: 0;
+  }
+  .swatch-same   { background: #fff3cd; }
+  .swatch-diff   { background: #cfe2ff; }
+  .swatch-unique { background: #fff; }
+
+  .compare-table thead th {
+    background: var(--afl-navy);
+    color: #fff;
+    font-size: 1rem;
+    padding: .75rem .5rem;
+  }
+  .compare-table thead th.pos-col {
+    width: 80px;
+    min-width: 60px;
+  }
+
+  .pos-cell {
+    background: #f4f6fb;
+    font-size: 1rem;
+  }
+  .pos-one { background: #fff8e1; }
+
+  .pick-cell {
+    padding: .6rem .5rem;
+    transition: background .15s;
+    min-width: 140px;
+  }
+  .cell-same   { background: #fff3cd; }
+  .cell-diff   { background: #cfe2ff; }
+  .cell-empty  { background: #f8f9fa; }
+
+  .team-name {
+    font-weight: 500;
+    font-size: .9rem;
+    display: block;
+  }
+
+  .shared-badge {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: .1em .45em;
+    border-radius: .3rem;
+    margin-top: .15rem;
+  }
+  .badge-same { background: #e6a800; color: #fff; }
+  .badge-diff { background: #0d6efd; color: #fff; }
+
+  @media (max-width: 576px) {
+    .pick-cell { min-width: 90px; }
+    .team-name { font-size: .75rem; }
+  }
+</style>
+{% endblock %}

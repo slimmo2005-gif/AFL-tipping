@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Enter Predictions – AFL Tipping 2026{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-pencil-square me-2"></i>Enter Predictions</h1>
+    <p class="subtitle mb-0">Each person selects their predicted top 10 teams in order</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card mb-4">
+    <div class="card-body bg-light rounded">
+      <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2 text-primary"></i>Scoring Rules</h6>
+      <div class="row g-2 text-sm">
+        <div class="col-auto"><span class="badge-pts me-1">5 pts</span> Correct team at #1</div>
+        <div class="col-auto"><span class="badge-pts me-1">2 pts</span> Right team, right spot (positions 2–10)</div>
+        <div class="col-auto"><span class="badge-pts me-1">1 pt</span> Right team, wrong spot (still in top 10)</div>
+        <div class="col-auto"><span class="badge-pts-0 me-1">0 pts</span> Team not in actual top 10</div>
+      </div>
+    </div>
+  </div>
+
+  <form method="POST" action="{{ url_for('setup') }}" id="predForm">
+    <!-- Tab navigation -->
+    <ul class="nav nav-tabs mb-0" id="participantTabs" role="tablist">
+      {% for p in participants %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {% if loop.first %}active{% endif %} fw-semibold"
+                id="tab-{{ p.id }}"
+                data-bs-toggle="tab"
+                data-bs-target="#pane-{{ p.id }}"
+                type="button" role="tab">
+          <i class="bi bi-person me-1"></i>{{ p.name }}
+          {% if existing.get(p.id)|length == 10 %}
+            <i class="bi bi-check-circle-fill text-success ms-1"></i>
+          {% endif %}
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="tab-content card card-body border-top-0 rounded-top-0 mb-4">
+      {% for p in participants %}
+      <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="pane-{{ p.id }}" role="tabpanel">
+        <h5 class="mt-3 mb-3 fw-bold">{{ p.name }}'s Top 10 Predictions</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle" style="max-width: 480px;">
+            <thead>
+              <tr>
+                <th style="width:60px">Position</th>
+                <th>Team</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pos in range(1, 11) %}
+              <tr>
+                <td class="text-center fw-bold {% if pos == 1 %}table-warning{% endif %}">
+                  {% if pos == 1 %}🥇{% else %}{{ pos }}{% endif %}
+                </td>
+                <td>
+                  <select class="form-select form-select-sm team-select"
+                          name="p{{ p.id }}_pos{{ pos }}"
+                          data-participant="{{ p.id }}"
+                          required>
+                    <option value="">— Select team —</option>
+                    {% for team in teams %}
+                    <option value="{{ team }}"
+                      {% if existing.get(p.id, {}).get(pos) == team %}selected{% endif %}>
+                      {{ team }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% if not loop.last %}
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-afl-outline btn-sm next-tab"
+                  data-next="tab-{{ participants[loop.index].id }}">
+            Next: {{ participants[loop.index].name }} <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="d-flex gap-3 mb-5">
+      <button type="submit" class="btn btn-afl btn-lg px-5">
+        <i class="bi bi-save me-2"></i>Save All Predictions
+      </button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Next-tab buttons
+  document.querySelectorAll('.next-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabEl = document.getElementById(btn.dataset.next);
+      bootstrap.Tab.getOrCreateInstance(tabEl).show();
+    });
+  });
+
+  // Highlight duplicate team selections within a participant's pane
+  document.querySelectorAll('.team-select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const pid = sel.dataset.participant;
+      const selects = document.querySelectorAll(`.team-select[data-participant="${pid}"]`);
+      const counts = {};
+      selects.forEach(s => { if (s.value) counts[s.value] = (counts[s.value] || 0) + 1; });
+      selects.forEach(s => {
+        s.classList.remove('is-invalid');
+        if (s.value && counts[s.value] > 1) s.classList.add('is-invalid');
+      });
+    });
+  });
+</script>
+{% endblock %}
