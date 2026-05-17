@@ -80,7 +80,7 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
     renderAlerts('alerts', [
       {
         type: 'danger',
-        text: `Failed to fetch ladder: ${err.message}. Try again, or run the “Update AFL ladder” GitHub Action.`,
+        text: `Failed to fetch ladder: ${err.message}. Please try again in a moment.`,
       },
     ]);
     btn.disabled = false;
