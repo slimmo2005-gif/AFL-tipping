@@ -1,4 +1,4 @@
-import { assetUrl } from './config.js';
+import { assetUrl, adminUrl } from './config.js';
 import { initNav } from './nav.js';
 import { loadStore, getParticipants, getPredictionMap } from './storage.js';
 
@@ -21,7 +21,7 @@ if (!hasPredictions) {
   root.innerHTML = `<div class="alert alert-warning">
     <i class="bi bi-exclamation-triangle me-2"></i>
     No predictions entered yet.
-    <a href="${assetUrl('setup.html')}" class="alert-link">Enter predictions</a> first.
+    Predictions have not been entered yet.
   </div>`;
 } else {
   const matrix = [];

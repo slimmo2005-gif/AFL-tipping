@@ -1,4 +1,4 @@
-import { assetUrl } from './config.js';
+import { publicUrl } from './config.js';
 import { fetchAflLadder } from './api.js';
 import { initNav, renderAlerts } from './nav.js';
 import {
@@ -11,12 +11,13 @@ import {
 } from './storage.js';
 import { hasGitHubToken, pushStoreToGitHub, initGitHubSettings } from './github.js';
 
-initNav('index');
+initNav('admin');
 initGitHubSettings();
 
 const store = await loadStore();
 const participants = getParticipants(store);
 const rounds = store.rounds;
+const D = 'x';
 
 const statusEl = document.getElementById('predStatus');
 statusEl.innerHTML = participants
@@ -30,12 +31,12 @@ statusEl.innerHTML = participants
     } else {
       badge = '<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Not set</span>';
     }
-    return `<div class="d-flex align-items-center mb-3">
-      <div class="flex-grow-1"><strong>${p.name}</strong></div>${badge}</div>`;
+    return `<${D} class="d-flex align-items-center mb-3">
+      <${D} class="flex-grow-1"><strong>${p.name}</strong></${D}>${badge}</${D}>`;
   })
   .join('')
-  .replaceAll('<div', '<div')
-  .replaceAll('</div>', '</div>'.replace('</div>', '</div>'));
+  .replaceAll(`<${D}`, '<div')
+  .replaceAll(`</${D}>`, '</div>');
 
 const roundsSection = document.getElementById('roundsSection');
 if (rounds.length) {
@@ -44,16 +45,18 @@ if (rounds.length) {
   const links = rounds
     .map(
       (r) =>
-        `<a href="${assetUrl(`leaderboard.html?round=${r.round_number}`)}" class="btn btn-sm btn-afl-outline round-btn">Rd ${r.round_number}</a>`,
+        `<a href="${publicUrl(`?round=${r.round_number}`)}" class="btn btn-sm btn-afl-outline round-btn">Rd ${r.round_number}</a>`,
     )
     .join('');
-  roundsSection.innerHTML = `<div class="card">
-    <div class="card-header"><i class="bi bi-calendar3 me-2"></i>Rounds Recorded</div>
-    <div class="card-body">
-      <div class="d-flex flex-wrap gap-2">${links}</div>
+  roundsSection.innerHTML = `<${D} class="card">
+    <${D} class="card-header"><i class="bi bi-calendar3 me-2"></i>Rounds Recorded</${D}>
+    <${D} class="card-body">
+      <${D} class="d-flex flex-wrap gap-2">${links}</${D}>
       <p class="text-muted small mt-3 mb-0">Last updated: ${last.fetched_at}</p>
-    </div>
-  </div>`;
+    </${D}>
+  </${D}>`
+    .replaceAll(`<${D}`, '<div')
+    .replaceAll(`</${D}>`, '</div>');
 }
 
 document.getElementById('ladderForm').addEventListener('submit', async (e) => {
@@ -91,7 +94,7 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
     renderAlerts('alerts', [
       {
         type: 'success',
-        text: `Round ${roundNumber} saved to GitHub (${ladder.length} teams). Everyone will see it after Pages rebuilds (~1 min). <a href="${assetUrl(`leaderboard.html?round=${roundNumber}`)}">View leaderboard</a>`,
+        text: `Round ${roundNumber} saved to GitHub (${ladder.length} teams). Everyone will see it after Pages rebuilds (~1 min). <a href="${publicUrl(`?round=${roundNumber}`)}">View leaderboard</a>`,
       },
     ]);
     setTimeout(() => location.reload(), 1500);

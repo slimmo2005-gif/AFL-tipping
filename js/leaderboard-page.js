@@ -1,4 +1,4 @@
-import { assetUrl } from './config.js';
+import { adminUrl, publicUrl } from './config.js';
 import { calculateScore } from './scoring.js';
 import { initNav } from './nav.js';
 import { loadStore, getParticipants, getPredictionsList, parseLadder } from './storage.js';
@@ -15,7 +15,7 @@ const D = 'div';
 if (!rounds.length) {
   root.innerHTML = `<${D} class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i>
-    No rounds recorded yet. Go to <a href="${assetUrl('index.html')}">Home</a> and fetch the AFL ladder.
+    No rounds recorded yet. An admin needs to <a href="${adminUrl()}">fetch the AFL ladder</a>.
   </${D}>`;
 } else {
   const params = new URLSearchParams(location.search);
@@ -43,7 +43,7 @@ if (!rounds.length) {
   const roundLinks = rounds
     .map((r) => {
       const active = r.round_number === roundRec.round_number;
-      return `<a href="${assetUrl(`leaderboard.html?round=${r.round_number}`)}"
+      return `<a href="${publicUrl(`?round=${r.round_number}`)}"
         class="btn btn-sm round-btn ${active ? 'active' : 'btn-afl-outline'}">Rd ${r.round_number}</a>`;
     })
     .join('');

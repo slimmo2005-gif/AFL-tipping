@@ -1,22 +1,30 @@
-import { assetUrl } from './config.js';
+import { assetUrl, adminUrl, isAdminMode, publicUrl } from './config.js';
 
-const PAGES = [
-  { id: 'index', href: 'index.html', icon: 'bi-house', label: 'Home' },
-  { id: 'setup', href: 'setup.html', icon: 'bi-pencil-square', label: 'Predictions' },
-  { id: 'leaderboard', href: 'leaderboard.html', icon: 'bi-bar-chart-fill', label: 'Leaderboard' },
-  { id: 'compare', href: 'compare.html', icon: 'bi-grid-3x3-gap-fill', label: 'Compare' },
+const PUBLIC_PAGES = [
+  { id: 'leaderboard', href: publicUrl(), icon: 'bi-bar-chart-fill', label: 'Leaderboard' },
+  { id: 'compare', href: assetUrl('compare.html'), icon: 'bi-grid-3x3-gap-fill', label: 'Compare' },
+];
+
+const ADMIN_PAGES = [
+  { id: 'admin', href: adminUrl(), icon: 'bi-gear-fill', label: 'Admin' },
+  { id: 'predictions', href: adminUrl('page=predictions'), icon: 'bi-pencil-square', label: 'Predictions' },
+  { id: 'leaderboard', href: publicUrl(), icon: 'bi-bar-chart-fill', label: 'View leaderboard' },
+  { id: 'compare', href: assetUrl('compare.html'), icon: 'bi-grid-3x3-gap-fill', label: 'Compare' },
 ];
 
 export function initNav(activePage) {
   const ul = document.getElementById('mainNav');
   if (!ul) return;
-  ul.innerHTML = PAGES.map(
-    (p) => `<li class="nav-item">
-      <a class="nav-link ${p.id === activePage ? 'active' : ''}" href="${assetUrl(p.href)}">
+  const pages = isAdminMode() ? ADMIN_PAGES : PUBLIC_PAGES;
+  ul.innerHTML = pages
+    .map(
+      (p) => `<li class="nav-item">
+      <a class="nav-link ${p.id === activePage ? 'active' : ''}" href="${p.href}">
         <i class="bi ${p.icon} me-1"></i>${p.label}
       </a>
     </li>`,
-  ).join('');
+    )
+    .join('');
 }
 
 export function renderAlerts(containerId, messages) {

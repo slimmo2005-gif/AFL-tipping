@@ -1,6 +1,10 @@
-import { assetUrl } from './config.js';
+import { adminUrl, isAdminMode, isPredictionsPage, publicUrl } from './config.js';
 import { getTeams } from './api.js';
 import { initNav, renderAlerts } from './nav.js';
+
+if (!isAdminMode() || !isPredictionsPage()) {
+  location.replace(publicUrl());
+}
 import {
   loadStore,
   saveStore,
@@ -11,7 +15,7 @@ import {
 } from './storage.js';
 import { hasGitHubToken, pushStoreToGitHub } from './github.js';
 
-initNav('setup');
+initNav('predictions');
 
 const store = await loadStore();
 const participants = getParticipants(store);
@@ -139,12 +143,12 @@ document.getElementById('predForm').addEventListener('submit', async (e) => {
     if (hasGitHubToken()) {
       await pushStoreToGitHub(store, 'Update predictions');
     }
-    location.href = assetUrl('setup.html?saved=1');
+    location.href = adminUrl('page=predictions&saved=1');
   } catch (err) {
     renderAlerts('alerts', [
       {
         type: 'danger',
-        text: `${err.message} Predictions are saved in this browser — add a token on Home to sync.`,
+        text: `${err.message} Predictions are saved in this browser — add a token on Admin to sync.`,
       },
     ]);
     if (btn) {

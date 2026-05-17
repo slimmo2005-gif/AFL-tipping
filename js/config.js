@@ -13,6 +13,27 @@ export function assetUrl(path) {
   return base + clean;
 }
 
+export function isAdminMode() {
+  return new URLSearchParams(location.search).has('admin');
+}
+
+export function isPredictionsPage() {
+  const params = new URLSearchParams(location.search);
+  return params.has('admin') && params.get('page') === 'predictions';
+}
+
+/** Admin area URLs (index.html?admin…). */
+export function adminUrl(extra = '') {
+  const q = extra ? (extra.startsWith('&') ? extra : `&${extra}`) : '';
+  return `${assetUrl('index.html')}?admin${q}`;
+}
+
+/** Public leaderboard URL. */
+export function publicUrl(extra = '') {
+  const q = extra ? (extra.startsWith('?') ? extra : `?${extra}`) : '';
+  return `${assetUrl('index.html')}${q}`;
+}
+
 export const AFL_COMP_SEASON_ID = 85;
 export const PARTICIPANT_NAMES = ['Matt', 'Brett', 'Tim', 'Johno'];
 
