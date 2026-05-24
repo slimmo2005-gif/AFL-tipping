@@ -187,7 +187,7 @@ QUATTRO_BODY = f"""
     </{TAG}>
     <{TAG} class="col-md-7">
       <p class="lead mb-2">Matt (Essendon), Brett (Carlton), Tim (Hawthorn) and Johno (Geelong) — when all four clubs <strong>play</strong> and <strong>win</strong> in the same round, it&apos;s a Quattro Formaggi.</p>
-      <p class="text-muted small mb-0">Rounds where any of the four don&apos;t play are excluded. History from Squiggle (last ten seasons); crowd figures from AFL Tables. Ladder position is from the week before each game (rounds 1–3 use the prior season&apos;s final ladder).</p>
+      <p class="text-muted small mb-0">Rounds where any of the four don&apos;t play are excluded. History from Squiggle (last twenty seasons); crowd figures from AFL Tables. Ladder position is from the week before each game (rounds 1–3 use the prior season&apos;s final ladder).</p>
     </{TAG}>
   </{TAG}>
   <{TAG} class="row g-3 mb-4" id="qfStats"></{TAG}>

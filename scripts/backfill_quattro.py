@@ -15,7 +15,7 @@ from lib.quattro_logic import QUATTRO_TEAM_IDS, build_ladder_lookup, find_quattr
 from lib.squiggle_client import fetch_games, fetch_standings
 
 OUTPUT = ROOT / "data" / "quattro-formaggi.json"
-DEFAULT_YEARS = 10  # 10-season window (e.g. 2016–2025 when run in 2026)
+DEFAULT_YEARS = 20  # 20-season window (e.g. 2006–2025 when run in 2026)
 
 
 def _parse_event_date(matches: list) -> date | None:
