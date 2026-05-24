@@ -91,10 +91,34 @@ body {
   width: 36px;
   height: 36px;
   object-fit: contain;
+  flex-shrink: 0;
 }
+
+.qf-team-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qf-match-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.qf-match-table .qf-col-team { width: 18%; }
+.qf-match-table .qf-col-opponent { width: 16%; }
+.qf-match-table .qf-col-score { width: 10%; }
+.qf-match-table .qf-col-venue { width: 18%; }
+.qf-match-table .qf-col-att { width: 12%; }
+.qf-match-table .qf-col-ladder { width: 12%; }
+.qf-match-table .qf-col-date { width: 14%; }
 
 .qf-event-card .card-header {
   background: linear-gradient(90deg, var(--afl-navy), #1a4a9e);
+}
+
+.qf-gap-note {
+  font-weight: 500;
 }
 
 @media (max-width: 576px) {

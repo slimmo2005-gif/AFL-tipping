@@ -28,11 +28,11 @@
     },
     {
       "name": "Brett",
-      "team": "Hawthorn"
+      "team": "Carlton"
     },
     {
       "name": "Tim",
-      "team": "Carlton"
+      "team": "Hawthorn"
     },
     {
       "name": "Johno",
@@ -40,6 +40,140 @@
     }
   ],
   "events": [
+    {
+      "season": 2018,
+      "round": 19,
+      "round_label": "Round 19",
+      "round_type": "home_away",
+      "is_final": false,
+      "matches": [
+        {
+          "team": "Carlton",
+          "team_id": 3,
+          "opponent": "Gold Coast",
+          "team_score": 79,
+          "opponent_score": 44,
+          "venue": "Carrara",
+          "won": true,
+          "home": false,
+          "game_id": 625,
+          "date": "2018-07-28 19:25:00",
+          "ladder_position_before": 18,
+          "attendance": 10776
+        },
+        {
+          "team": "Essendon",
+          "team_id": 5,
+          "opponent": "Sydney",
+          "team_score": 109,
+          "opponent_score": 66,
+          "venue": "Docklands",
+          "won": true,
+          "home": true,
+          "game_id": 621,
+          "date": "2018-07-27 19:50:00",
+          "ladder_position_before": 11,
+          "attendance": 42251
+        },
+        {
+          "team": "Geelong",
+          "team_id": 7,
+          "opponent": "Brisbane Lions",
+          "team_score": 120,
+          "opponent_score": 78,
+          "venue": "GMHBA Stadium",
+          "won": true,
+          "home": true,
+          "game_id": 623,
+          "date": "2018-07-28 14:10:00",
+          "ladder_position_before": 9,
+          "attendance": 28226
+        },
+        {
+          "team": "Hawthorn",
+          "team_id": 10,
+          "opponent": "Fremantle",
+          "team_score": 112,
+          "opponent_score": 53,
+          "venue": "Optus Stadium",
+          "won": true,
+          "home": false,
+          "game_id": 629,
+          "date": "2018-07-29 16:40:00",
+          "ladder_position_before": 8,
+          "attendance": 41845
+        }
+      ],
+      "event_date": "2018-07-29",
+      "days_since_previous": null
+    },
+    {
+      "season": 2019,
+      "round": 17,
+      "round_label": "Round 17",
+      "round_type": "home_away",
+      "is_final": false,
+      "matches": [
+        {
+          "team": "Carlton",
+          "team_id": 3,
+          "opponent": "Sydney",
+          "team_score": 69,
+          "opponent_score": 62,
+          "venue": "S.C.G.",
+          "won": true,
+          "home": false,
+          "game_id": 3288,
+          "date": "2019-07-13 13:45:00",
+          "ladder_position_before": 17,
+          "attendance": 32570
+        },
+        {
+          "team": "Essendon",
+          "team_id": 5,
+          "opponent": "North Melbourne",
+          "team_score": 86,
+          "opponent_score": 81,
+          "venue": "Marvel Stadium",
+          "won": true,
+          "home": true,
+          "game_id": 3293,
+          "date": "2019-07-13 16:35:00",
+          "ladder_position_before": 9,
+          "attendance": 45682
+        },
+        {
+          "team": "Geelong",
+          "team_id": 7,
+          "opponent": "St Kilda",
+          "team_score": 84,
+          "opponent_score": 57,
+          "venue": "Kardinia Park",
+          "won": true,
+          "home": true,
+          "game_id": 3295,
+          "date": "2019-07-13 19:25:00",
+          "ladder_position_before": 1,
+          "attendance": 24035
+        },
+        {
+          "team": "Hawthorn",
+          "team_id": 10,
+          "opponent": "Fremantle",
+          "team_score": 84,
+          "opponent_score": 53,
+          "venue": "York Park",
+          "won": true,
+          "home": true,
+          "game_id": 3289,
+          "date": "2019-07-13 14:10:00",
+          "ladder_position_before": 13,
+          "attendance": 13006
+        }
+      ],
+      "event_date": "2019-07-13",
+      "days_since_previous": 349
+    },
     {
       "season": 2022,
       "round": 17,
@@ -58,7 +192,8 @@
           "home": false,
           "game_id": 8805,
           "date": "2022-07-10 16:40:00",
-          "ladder_position_before": 5
+          "ladder_position_before": 5,
+          "attendance": 43359
         },
         {
           "team": "Essendon",
@@ -71,7 +206,8 @@
           "home": false,
           "game_id": 8797,
           "date": "2022-07-10 13:10:00",
-          "ladder_position_before": 16
+          "ladder_position_before": 16,
+          "attendance": 29101
         },
         {
           "team": "Geelong",
@@ -84,7 +220,8 @@
           "home": true,
           "game_id": 8799,
           "date": "2022-07-07 19:20:00",
-          "ladder_position_before": 2
+          "ladder_position_before": 2,
+          "attendance": 21501
         },
         {
           "team": "Hawthorn",
@@ -97,9 +234,12 @@
           "home": true,
           "game_id": 8801,
           "date": "2022-07-10 15:20:00",
-          "ladder_position_before": 15
+          "ladder_position_before": 15,
+          "attendance": 18833
         }
-      ]
+      ],
+      "event_date": "2022-07-10",
+      "days_since_previous": 1093
     },
     {
       "season": 2023,
@@ -119,7 +259,8 @@
           "home": false,
           "game_id": 34436,
           "date": "2023-08-06 15:20:00",
-          "ladder_position_before": 7
+          "ladder_position_before": 7,
+          "attendance": 42656
         },
         {
           "team": "Essendon",
@@ -132,7 +273,8 @@
           "home": true,
           "game_id": 34431,
           "date": "2023-08-05 13:45:00",
-          "ladder_position_before": 13
+          "ladder_position_before": 13,
+          "attendance": 30742
         },
         {
           "team": "Geelong",
@@ -145,7 +287,8 @@
           "home": true,
           "game_id": 34432,
           "date": "2023-08-05 19:25:00",
-          "ladder_position_before": 9
+          "ladder_position_before": 9,
+          "attendance": 21279
         },
         {
           "team": "Hawthorn",
@@ -158,9 +301,12 @@
           "home": true,
           "game_id": 34434,
           "date": "2023-08-05 16:35:00",
-          "ladder_position_before": 16
+          "ladder_position_before": 16,
+          "attendance": 62134
         }
-      ]
+      ],
+      "event_date": "2023-08-06",
+      "days_since_previous": 392
     },
     {
       "season": 2024,
@@ -180,7 +326,8 @@
           "home": true,
           "game_id": 35749,
           "date": "2024-04-20 16:35:00",
-          "ladder_position_before": 6
+          "ladder_position_before": 6,
+          "attendance": 11730
         },
         {
           "team": "Essendon",
@@ -193,7 +340,8 @@
           "home": false,
           "game_id": 35747,
           "date": "2024-04-19 19:40:00",
-          "ladder_position_before": 9
+          "ladder_position_before": 9,
+          "attendance": 36020
         },
         {
           "team": "Geelong",
@@ -206,7 +354,8 @@
           "home": false,
           "game_id": 35750,
           "date": "2024-04-20 19:30:00",
-          "ladder_position_before": 2
+          "ladder_position_before": 2,
+          "attendance": 93066
         },
         {
           "team": "Hawthorn",
@@ -219,21 +368,30 @@
           "home": false,
           "game_id": 35753,
           "date": "2024-04-21 16:05:00",
-          "ladder_position_before": 17
+          "ladder_position_before": 17,
+          "attendance": 11392
         }
-      ]
+      ],
+      "event_date": "2024-04-21",
+      "days_since_previous": 259,
+      "days_since_today": 763
     }
   ],
   "meta": {
-    "source": "Squiggle API (api.squiggle.com.au)",
+    "source": "Squiggle API (api.squiggle.com.au); attendance via AFL Tables (afltables.com)",
     "seasons_scanned": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
       2021,
       2022,
       2023,
       2024,
       2025
     ],
-    "last_backfill": "2026-05-24 02:49 UTC",
-    "attendance_note": "Attendance not available from Squiggle; venue shown when known."
+    "last_backfill": "2026-05-24 03:12 UTC",
+    "attendance_note": "Crowd figures from AFL Tables when a match can be matched."
   }
 }
