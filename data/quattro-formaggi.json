@@ -1,0 +1,239 @@
+{
+  "teams": [
+    {
+      "id": 3,
+      "name": "Carlton",
+      "slug": "carlton"
+    },
+    {
+      "id": 5,
+      "name": "Essendon",
+      "slug": "essendon"
+    },
+    {
+      "id": 7,
+      "name": "Geelong",
+      "slug": "geelong"
+    },
+    {
+      "id": 10,
+      "name": "Hawthorn",
+      "slug": "hawthorn"
+    }
+  ],
+  "people": [
+    {
+      "name": "Matt",
+      "team": "Essendon"
+    },
+    {
+      "name": "Brett",
+      "team": "Hawthorn"
+    },
+    {
+      "name": "Tim",
+      "team": "Carlton"
+    },
+    {
+      "name": "Johno",
+      "team": "Geelong"
+    }
+  ],
+  "events": [
+    {
+      "season": 2022,
+      "round": 17,
+      "round_label": "Round 17",
+      "round_type": "home_away",
+      "is_final": false,
+      "matches": [
+        {
+          "team": "Carlton",
+          "team_id": 3,
+          "opponent": "West Coast",
+          "team_score": 116,
+          "opponent_score": 53,
+          "venue": "Perth Stadium",
+          "won": true,
+          "home": false,
+          "game_id": 8805,
+          "date": "2022-07-10 16:40:00",
+          "ladder_position_before": 5
+        },
+        {
+          "team": "Essendon",
+          "team_id": 5,
+          "opponent": "Brisbane Lions",
+          "team_score": 100,
+          "opponent_score": 90,
+          "venue": "Gabba",
+          "won": true,
+          "home": false,
+          "game_id": 8797,
+          "date": "2022-07-10 13:10:00",
+          "ladder_position_before": 16
+        },
+        {
+          "team": "Geelong",
+          "team_id": 7,
+          "opponent": "Melbourne",
+          "team_score": 91,
+          "opponent_score": 63,
+          "venue": "Kardinia Park",
+          "won": true,
+          "home": true,
+          "game_id": 8799,
+          "date": "2022-07-07 19:20:00",
+          "ladder_position_before": 2
+        },
+        {
+          "team": "Hawthorn",
+          "team_id": 10,
+          "opponent": "Adelaide",
+          "team_score": 86,
+          "opponent_score": 54,
+          "venue": "Docklands",
+          "won": true,
+          "home": true,
+          "game_id": 8801,
+          "date": "2022-07-10 15:20:00",
+          "ladder_position_before": 15
+        }
+      ]
+    },
+    {
+      "season": 2023,
+      "round": 21,
+      "round_label": "Round 21",
+      "round_type": "home_away",
+      "is_final": false,
+      "matches": [
+        {
+          "team": "Carlton",
+          "team_id": 3,
+          "opponent": "St Kilda",
+          "team_score": 73,
+          "opponent_score": 54,
+          "venue": "Docklands",
+          "won": true,
+          "home": false,
+          "game_id": 34436,
+          "date": "2023-08-06 15:20:00",
+          "ladder_position_before": 7
+        },
+        {
+          "team": "Essendon",
+          "team_id": 5,
+          "opponent": "West Coast",
+          "team_score": 73,
+          "opponent_score": 72,
+          "venue": "Docklands",
+          "won": true,
+          "home": true,
+          "game_id": 34431,
+          "date": "2023-08-05 13:45:00",
+          "ladder_position_before": 13
+        },
+        {
+          "team": "Geelong",
+          "team_id": 7,
+          "opponent": "Port Adelaide",
+          "team_score": 97,
+          "opponent_score": 85,
+          "venue": "Kardinia Park",
+          "won": true,
+          "home": true,
+          "game_id": 34432,
+          "date": "2023-08-05 19:25:00",
+          "ladder_position_before": 9
+        },
+        {
+          "team": "Hawthorn",
+          "team_id": 10,
+          "opponent": "Collingwood",
+          "team_score": 105,
+          "opponent_score": 73,
+          "venue": "M.C.G.",
+          "won": true,
+          "home": true,
+          "game_id": 34434,
+          "date": "2023-08-05 16:35:00",
+          "ladder_position_before": 16
+        }
+      ]
+    },
+    {
+      "season": 2024,
+      "round": 6,
+      "round_label": "Round 6",
+      "round_type": "home_away",
+      "is_final": false,
+      "matches": [
+        {
+          "team": "Carlton",
+          "team_id": 3,
+          "opponent": "Greater Western Sydney",
+          "team_score": 117,
+          "opponent_score": 98,
+          "venue": "Docklands",
+          "won": true,
+          "home": true,
+          "game_id": 35749,
+          "date": "2024-04-20 16:35:00",
+          "ladder_position_before": 6
+        },
+        {
+          "team": "Essendon",
+          "team_id": 5,
+          "opponent": "Adelaide",
+          "team_score": 78,
+          "opponent_score": 75,
+          "venue": "Adelaide Oval",
+          "won": true,
+          "home": false,
+          "game_id": 35747,
+          "date": "2024-04-19 19:40:00",
+          "ladder_position_before": 9
+        },
+        {
+          "team": "Geelong",
+          "team_id": 7,
+          "opponent": "Brisbane Lions",
+          "team_score": 63,
+          "opponent_score": 37,
+          "venue": "Gabba",
+          "won": true,
+          "home": false,
+          "game_id": 35750,
+          "date": "2024-04-20 19:30:00",
+          "ladder_position_before": 2
+        },
+        {
+          "team": "Hawthorn",
+          "team_id": 10,
+          "opponent": "North Melbourne",
+          "team_score": 113,
+          "opponent_score": 68,
+          "venue": "Docklands",
+          "won": true,
+          "home": false,
+          "game_id": 35753,
+          "date": "2024-04-21 16:05:00",
+          "ladder_position_before": 17
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "source": "Squiggle API (api.squiggle.com.au)",
+    "seasons_scanned": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "last_backfill": "2026-05-24 02:49 UTC",
+    "attendance_note": "Attendance not available from Squiggle; venue shown when known."
+  }
+}

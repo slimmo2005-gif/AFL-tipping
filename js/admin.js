@@ -1,4 +1,4 @@
-import { publicUrl } from './config.js';
+import { publicUrl, assetUrl } from './config.js';
 import { fetchAflLadder } from './api.js';
 import { initNav, renderAlerts } from './nav.js';
 import {
@@ -10,6 +10,7 @@ import {
   downloadStoreJson,
 } from './storage.js';
 import { hasGitHubToken, pushStoreToGitHub, initGitHubSettings } from './github.js';
+import { checkQuattroRound } from './quattro-check.js';
 
 initNav('admin');
 initGitHubSettings();
@@ -91,10 +92,21 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving to GitHub…';
     await pushStoreToGitHub(store, `Update ladder for round ${roundNumber}`);
 
+    let qfMsg = '';
+    try {
+      const season = new Date().getFullYear();
+      const qf = await checkQuattroRound(season, roundNumber);
+      qfMsg = qf.isQuattro
+        ? ` <strong>Quattro Formaggi!</strong> All four won — run the GitHub Action or <code>scripts/check_quattro_round.py</code> to add to history. <a href="${assetUrl('quattro-formaggi.html')}">View page</a>`
+        : ` Quattro Formaggi: not this round (${qf.reason}).`;
+    } catch {
+      qfMsg = ' Quattro check skipped (Squiggle unavailable in browser). Use GitHub Action to update history.';
+    }
+
     renderAlerts('alerts', [
       {
         type: 'success',
-        text: `Round ${roundNumber} saved to GitHub (${ladder.length} teams). Everyone will see it after Pages rebuilds (~1 min). <a href="${publicUrl(`?round=${roundNumber}`)}">View leaderboard</a>`,
+        text: `Round ${roundNumber} saved to GitHub (${ladder.length} teams).${qfMsg} <a href="${publicUrl(`?round=${roundNumber}`)}">View leaderboard</a>`,
       },
     ]);
     setTimeout(() => location.reload(), 1500);

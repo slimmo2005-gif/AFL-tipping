@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Essendon">
+  <rect width="120" height="120" rx="12" fill="#010101"/>
+  <rect x="0" y="60" width="120" height="60" fill="#cc2030"/>
+  <text x="60" y="72" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="22">ESS</text>
+</svg>

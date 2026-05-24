@@ -168,6 +168,35 @@ PREDICTIONS_VIEW = f"""
   </{TAG}>
 </{TAG}>"""
 
+QUATTRO_BODY = f"""
+<{TAG} class="page-header page-header--branded">
+  <{TAG} class="container page-header-inner">
+    <{TAG} class="page-header-text">
+      <h1><i class="bi bi-emoji-smile-fill me-2"></i>Quattro Formaggi</h1>
+      <p class="subtitle mb-0">When Essendon, Hawthorn, Carlton &amp; Geelong all win the same round</p>
+    </{TAG}>
+    <{TAG} class="page-header-brand">
+      <img src="images/slim-analytics-logo.png" alt="Slim Analytics" class="slim-analytics-logo">
+    </{TAG}>
+  </{TAG}>
+</{TAG}>
+<{TAG} class="container mb-5">
+  <{TAG} class="row g-4 align-items-center mb-4">
+    <{TAG} class="col-md-5 text-center">
+      <img src="images/quattro-formaggi.jpg" alt="Quattro formaggi" class="qf-hero-img rounded shadow">
+    </{TAG}>
+    <{TAG} class="col-md-7">
+      <p class="lead mb-2">Matt (Essendon), Brett (Hawthorn), Tim (Carlton) and Johno (Geelong) — when all four clubs <strong>play</strong> and <strong>win</strong> in the same round, it&apos;s a Quattro Formaggi.</p>
+      <p class="text-muted small mb-0">Rounds where any of the four don&apos;t play are excluded. History from Squiggle (last five seasons); ladder position is from the week before each game (rounds 1–3 use the prior season&apos;s final ladder).</p>
+    </{TAG}>
+  </{TAG}>
+  <{TAG} class="row g-3 mb-4" id="qfStats"></{TAG}>
+  <{TAG} class="d-flex flex-wrap justify-content-center gap-4 mb-4" id="qfPeople"></{TAG}>
+  <h2 class="h4 fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>History</h2>
+  <{TAG} id="qfEvents"></{TAG}>
+  <p class="text-muted small mt-3" id="qfMetaNote"></p>
+</{TAG}>"""
+
 COMPARE_BODY = f"""
 <{TAG} class="page-header"><{TAG} class="container">
   <h1><i class="bi bi-grid-3x3-gap-fill me-2"></i>Predictions Comparison</h1>
@@ -215,6 +244,11 @@ root = Path(__file__).parent
     encoding="utf-8",
 )
 
+(root / "quattro-formaggi.html").write_text(
+    shell("Quattro Formaggi – AFL Tipping 2026", "quattro-page.js", d(QUATTRO_BODY)),
+    encoding="utf-8",
+)
+
 (root / "compare.html").write_text(
     shell("Compare – AFL Tipping 2026", "compare-page.js", d(COMPARE_BODY)),
     encoding="utf-8",
@@ -230,4 +264,4 @@ root = Path(__file__).parent
     encoding="utf-8",
 )
 
-print("wrote index.html, compare.html, leaderboard.html, setup.html")
+print("wrote index.html, quattro-formaggi.html, compare.html, leaderboard.html, setup.html")

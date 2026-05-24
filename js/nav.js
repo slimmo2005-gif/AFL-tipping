@@ -2,6 +2,7 @@ import { assetUrl, adminUrl, isAdminMode, publicUrl } from './config.js';
 
 const PUBLIC_PAGES = [
   { id: 'leaderboard', href: publicUrl(), icon: 'bi-bar-chart-fill', label: 'Leaderboard' },
+  { id: 'quattro', href: assetUrl('quattro-formaggi.html'), icon: 'bi-emoji-smile-fill', label: 'Quattro Formaggi' },
   { id: 'compare', href: assetUrl('compare.html'), icon: 'bi-grid-3x3-gap-fill', label: 'Compare' },
 ];
 

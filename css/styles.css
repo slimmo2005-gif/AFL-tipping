@@ -68,6 +68,35 @@ body {
   object-fit: contain;
 }
 
+/* Quattro Formaggi */
+.qf-hero-img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+}
+
+.qf-team-card {
+  text-align: center;
+  min-width: 100px;
+}
+
+.qf-team-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.qf-table-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.qf-event-card .card-header {
+  background: linear-gradient(90deg, var(--afl-navy), #1a4a9e);
+}
+
 @media (max-width: 576px) {
   .page-header-inner {
     flex-direction: column;
