@@ -10,8 +10,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from lib.afltables_attendance import lookup_attendance
-from lib.quattro_logic import QUATTRO_TEAM_IDS, build_ladder_lookup, find_quattro_events
+from lib.afltables_attendance import load_season_matches
+from lib.quattro_logic import (
+    QUATTRO_TEAM_IDS,
+    build_ladder_lookup,
+    enrich_games_with_afl,
+    find_quattro_events,
+)
 from lib.squiggle_client import fetch_games, fetch_standings
 
 OUTPUT = ROOT / "data" / "quattro-formaggi.json"
@@ -56,30 +61,32 @@ def main():
     seasons = list(range(end_season - DEFAULT_YEARS, end_season))
 
     all_games_by_year = {}
+    afl_by_year = {}
     for year in seasons:
         print(f"Fetching Squiggle {year}...", flush=True)
         all_games_by_year[year] = fetch_games(year)
+        print(f"  AFL Tables matches {year}...", flush=True)
+        afl_by_year[year] = load_season_matches(year)
 
     ladder_lookup = build_ladder_lookup(all_games_by_year, fetch_standings)
 
     events = []
     for year in seasons:
-        found = find_quattro_events(all_games_by_year[year], ladder_lookup)
+        games = enrich_games_with_afl(all_games_by_year[year], afl_by_year[year])
+        found = find_quattro_events(games, ladder_lookup)
         events.extend(found)
         print(f"  {year}: {len(found)} quattro round(s)")
 
     events.sort(key=lambda e: (e["season"], e["round"]))
 
-    att_cache: dict = {}
-    for ev in events:
-        year = ev["season"]
-        for m in ev["matches"]:
-            crowd = lookup_attendance(
-                att_cache, year, m["team"], m["opponent"], m.get("date")
-            )
-            m["attendance"] = crowd
-
     _enrich_gaps(events)
+
+    missing_afl = sum(
+        1
+        for ev in events
+        for m in ev["matches"]
+        if m.get("attendance") is None or m.get("round") is None
+    )
 
     payload = {
         "teams": [
@@ -94,16 +101,19 @@ def main():
         ],
         "events": events,
         "meta": {
-            "source": "Squiggle API (api.squiggle.com.au); attendance via AFL Tables (afltables.com)",
+            "source": "Squiggle API (api.squiggle.com.au); rounds & attendance via AFL Tables (afltables.com)",
             "seasons_scanned": seasons,
             "last_backfill": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-            "attendance_note": "Crowd figures from AFL Tables when a match can be matched.",
+            "attendance_note": "Joined by date, home team, away team and venue (never row order).",
+            "unmatched_afl_fields": missing_afl,
         },
     }
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"\nWrote {len(events)} events to {OUTPUT}")
+    if missing_afl:
+        print(f"  Warning: {missing_afl} match field(s) could not be joined to AFL Tables", flush=True)
 
 
 if __name__ == "__main__":

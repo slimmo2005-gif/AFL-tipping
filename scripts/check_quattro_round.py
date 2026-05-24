@@ -11,7 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from lib.quattro_logic import build_ladder_lookup, find_quattro_events
+from lib.afltables_attendance import load_season_matches
+from lib.quattro_logic import build_ladder_lookup, enrich_games_with_afl, find_quattro_events
 from lib.squiggle_client import fetch_games, fetch_standings
 
 DATA_FILE = ROOT / "data" / "quattro-formaggi.json"
@@ -20,10 +21,12 @@ DATA_FILE = ROOT / "data" / "quattro-formaggi.json"
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--year", type=int, required=True)
-    parser.add_argument("--round", type=int, required=True)
+    parser.add_argument("--round", type=int, required=True, help="AFL Tables round number")
     args = parser.parse_args()
 
     games = fetch_games(args.year)
+    afl_index = load_season_matches(args.year)
+    games = enrich_games_with_afl(games, afl_index)
     all_by_year = {args.year: games}
     ladder_lookup = build_ladder_lookup(all_by_year, fetch_standings)
     found = find_quattro_events(games, ladder_lookup)

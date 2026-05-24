@@ -1,28 +1,14 @@
-"""Fetch match attendance from AFL Tables season pages."""
+"""Fetch match facts (round, attendance) from AFL Tables season pages."""
 from __future__ import annotations
 
 import re
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
 
-# Squiggle / common names -> AFL Tables link text
-TEAM_ALIASES = {
-    "geelong cats": "geelong",
-    "gws": "greater western sydney",
-    "gws giants": "greater western sydney",
-    "greater western sydney": "greater western sydney",
-    "west coast eagles": "west coast",
-    "west coast": "west coast",
-    "north melbourne": "north melbourne",
-    "kangaroos": "north melbourne",
-    "port adelaide": "port adelaide",
-    "brisbane lions": "brisbane lions",
-    "st kilda": "st kilda",
-    "gold coast": "gold coast",
-    "gold coast suns": "gold coast",
-}
+from lib.match_key import match_key_from_afl_row
 
 ROW_PAIR_RE = re.compile(
     r'<tr[^>]*>\s*'
@@ -31,6 +17,8 @@ ROW_PAIR_RE = re.compile(
     r'(?:[A-Za-z]{3}\s+)?(\d{1,2}-[A-Za-z]{3}-\d{4}).*?'
     r'<b>Att:\s*</b>([\d,]+)'
     r'.*?'
+    r'<b>Venue:</b>\s*<a href="[^"]+">([^<]+)</a>'
+    r'.*?'
     r'</tr>\s*'
     r'<tr[^>]*>\s*'
     r'<td[^>]*><a href="\.\./teams/[^"]+">([^<]+)</a></td>',
@@ -38,34 +26,22 @@ ROW_PAIR_RE = re.compile(
 )
 
 DATE_FMT = "%d-%b-%Y"
+ROUND_SPLIT_RE = re.compile(r"Round (\d+)</td>")
 
 
-def _norm(name: str) -> str:
-    n = (name or "").strip().lower()
-    n = TEAM_ALIASES.get(n, n)
-    return re.sub(r"\s+", " ", n)
-
-
-def _pair_key(home: str, away: str) -> tuple[str, str]:
-    a, b = sorted([_norm(home), _norm(away)])
-    return (a, b)
+@dataclass(frozen=True)
+class AflMatchRecord:
+    round_num: int
+    attendance: int
+    home_team: str
+    away_team: str
+    date_iso: str
+    venue: str
 
 
 def _parse_tables_date(raw: str) -> str | None:
-    """AFL Tables '20-Apr-2024' -> ISO '2024-04-20'."""
     try:
         return datetime.strptime(raw.strip(), DATE_FMT).date().isoformat()
-    except ValueError:
-        return None
-
-
-def _squiggle_date_iso(match_date: str | None) -> str | None:
-    if not match_date:
-        return None
-    raw = match_date.strip()[:10]
-    try:
-        datetime.strptime(raw, "%Y-%m-%d")
-        return raw
     except ValueError:
         return None
 
@@ -78,10 +54,10 @@ def _fetch_season_html(year: int) -> str:
         return resp.read().decode("latin-1", "replace")
 
 
-def load_season_attendance(year: int) -> dict[tuple[tuple[str, str], str], int]:
+def load_season_matches(year: int) -> dict[tuple[str, str, str, str], AflMatchRecord]:
     """
-    Map (sorted team pair, match date ISO) -> crowd.
-    Teams that meet twice in a season each get their own dated entry.
+    Index AFL Tables matches by (date, home, away, venue).
+    Never relies on row order — each match is parsed in its round section.
     """
     try:
         html = _fetch_season_html(year)
@@ -89,53 +65,57 @@ def load_season_attendance(year: int) -> dict[tuple[tuple[str, str], str], int]:
         print(f"  AFL Tables {year}: {ex}", flush=True)
         return {}
 
-    out: dict[tuple[tuple[str, str], str], int] = {}
-    for home, date_raw, att_s, away in ROW_PAIR_RE.findall(html):
-        iso = _parse_tables_date(date_raw)
-        if not iso:
-            continue
+    out: dict[tuple[str, str, str, str], AflMatchRecord] = {}
+    chunks = ROUND_SPLIT_RE.split(html)
+
+    # chunks: [preamble, round_num, body, round_num, body, ...]
+    for i in range(1, len(chunks), 2):
+        if i + 1 >= len(chunks):
+            break
         try:
-            crowd = int(att_s.replace(",", ""))
+            round_num = int(chunks[i])
         except ValueError:
             continue
-        key = (_pair_key(home, away), iso)
-        out[key] = crowd
+        body = chunks[i + 1]
+
+        for home, date_raw, att_s, venue, away in ROW_PAIR_RE.findall(body):
+            iso = _parse_tables_date(date_raw)
+            if not iso:
+                continue
+            try:
+                crowd = int(att_s.replace(",", ""))
+            except ValueError:
+                continue
+
+            key = match_key_from_afl_row(iso, home, away, venue)
+            out[key] = AflMatchRecord(
+                round_num=round_num,
+                attendance=crowd,
+                home_team=home,
+                away_team=away,
+                date_iso=iso,
+                venue=venue.strip(),
+            )
+
     return out
 
 
-def lookup_attendance(
-    cache: dict[int, dict[tuple[tuple[str, str], str], int]],
+def lookup_match(
+    cache: dict[int, dict[tuple[str, str, str, str], AflMatchRecord]],
     year: int,
-    team: str,
-    opponent: str,
-    match_date: str | None = None,
-) -> int | None:
+    key: tuple[str, str, str, str],
+) -> AflMatchRecord | None:
     if year not in cache:
-        print(f"  AFL Tables attendance {year}...", flush=True)
-        cache[year] = load_season_attendance(year)
+        print(f"  AFL Tables matches {year}...", flush=True)
+        cache[year] = load_season_matches(year)
+    return cache[year].get(key)
 
-    season = cache[year]
-    pair = _pair_key(team, opponent)
-    iso = _squiggle_date_iso(match_date)
 
-    if iso:
-        hit = season.get((pair, iso))
-        if hit is not None:
-            return hit
-
-    # Same pair met once this season — safe fallback
-    dated = [(d, c) for (p, d), c in season.items() if p == pair]
-    if len(dated) == 1:
-        return dated[0][1]
-
-    if iso and dated:
-        # Nearest date within the season (timezone / listing quirks)
-        target = datetime.strptime(iso, "%Y-%m-%d").date()
-        best = min(
-            dated,
-            key=lambda dc: abs((datetime.strptime(dc[0], "%Y-%m-%d").date() - target).days),
-        )
-        if abs((datetime.strptime(best[0], "%Y-%m-%d").date() - target).days) <= 2:
-            return best[1]
-
-    return None
+# Backwards-compatible helper
+def lookup_attendance(
+    cache: dict[int, dict[tuple[str, str, str, str], AflMatchRecord]],
+    year: int,
+    key: tuple[str, str, str, str],
+) -> int | None:
+    rec = lookup_match(cache, year, key)
+    return rec.attendance if rec else None
