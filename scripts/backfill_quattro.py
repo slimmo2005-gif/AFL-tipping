@@ -82,10 +82,7 @@ def main():
     _enrich_gaps(events)
 
     missing_afl = sum(
-        1
-        for ev in events
-        for m in ev["matches"]
-        if m.get("attendance") is None or m.get("round") is None
+        1 for ev in events for m in ev["matches"] if m.get("attendance") is None
     )
 
     payload = {
@@ -101,11 +98,12 @@ def main():
         ],
         "events": events,
         "meta": {
-            "source": "Squiggle API (api.squiggle.com.au); rounds & attendance via AFL Tables (afltables.com)",
+            "source": "Squiggle API (api.squiggle.com.au); attendance via AFL Tables (afltables.com)",
             "seasons_scanned": seasons,
             "last_backfill": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-            "attendance_note": "Joined by date, home team, away team and venue (never row order).",
-            "unmatched_afl_fields": missing_afl,
+            "round_note": "Round numbers from Squiggle (matches official AFL fixture rounds).",
+            "attendance_note": "Crowd joined by date, home team, away team and venue (never row order).",
+            "unmatched_attendance": missing_afl,
         },
     }
 
@@ -113,7 +111,7 @@ def main():
     OUTPUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"\nWrote {len(events)} events to {OUTPUT}")
     if missing_afl:
-        print(f"  Warning: {missing_afl} match field(s) could not be joined to AFL Tables", flush=True)
+        print(f"  Warning: {missing_afl} match(es) missing AFL Tables attendance", flush=True)
 
 
 if __name__ == "__main__":

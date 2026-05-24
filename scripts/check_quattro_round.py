@@ -21,7 +21,7 @@ DATA_FILE = ROOT / "data" / "quattro-formaggi.json"
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--year", type=int, required=True)
-    parser.add_argument("--round", type=int, required=True, help="AFL Tables round number")
+    parser.add_argument("--round", type=int, required=True, help="Squiggle / AFL fixture round number")
     args = parser.parse_args()
 
     games = fetch_games(args.year)

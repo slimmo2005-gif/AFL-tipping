@@ -1,7 +1,7 @@
 """Quattro Formaggi: Essendon, Hawthorn, Carlton, Geelong all play and win same round."""
 from collections import defaultdict
 
-from lib.match_key import date_iso_from_squiggle, match_key_from_squiggle
+from lib.match_key import match_key_from_squiggle
 
 QUATTRO_TEAM_IDS = {
     5: "Essendon",
@@ -21,13 +21,10 @@ def _game_for_team(game: dict, team_id: int) -> dict | None:
         "venue": game.get("venue") or "",
         "game_id": game["id"],
         "date": game.get("date", ""),
-        "squiggle_round": game["round"],
-        "squiggle_round_label": game.get("roundname") or f"Round {game['round']}",
+        "round": game["round"],
+        "round_label": game.get("roundname") or f"Round {game['round']}",
+        "attendance": afl.get("attendance"),
     }
-    if afl:
-        base["round"] = afl.get("round")
-        base["round_label"] = afl.get("round_label")
-        base["attendance"] = afl.get("attendance")
     if game["hteamid"] == team_id:
         return {
             **base,
@@ -53,32 +50,15 @@ def _game_for_team(game: dict, team_id: int) -> dict | None:
     return None
 
 
-def _round_group_key(game: dict) -> tuple:
-    """Group quattro candidates by AFL round when known, else Squiggle round."""
-    afl = game.get("_afl") or {}
-    if afl.get("round") is not None:
-        r = afl["round"]
-        return (game["year"], r, f"Round {r}")
-    return (
-        game["year"],
-        game["round"],
-        game.get("roundname") or f"Round {game['round']}",
-    )
-
-
 def enrich_games_with_afl(games: list, afl_index: dict) -> list:
-    """Attach _afl {round, round_label, attendance} via match key join."""
+    """Join AFL Tables attendance by (date, home, away, venue). Round stays from Squiggle."""
     enriched = []
     for g in games:
         g = dict(g)
         key = match_key_from_squiggle(g)
         rec = afl_index.get(key) if key else None
         if rec:
-            g["_afl"] = {
-                "round": rec.round_num,
-                "round_label": f"Round {rec.round_num}",
-                "attendance": rec.attendance,
-            }
+            g["_afl"] = {"attendance": rec.attendance}
         enriched.append(g)
     return enriched
 
@@ -86,29 +66,27 @@ def enrich_games_with_afl(games: list, afl_index: dict) -> list:
 def find_quattro_events(games: list, ladder_lookup) -> list:
     """
     ladder_lookup(season, squiggle_round_num, team_id) -> ladder rank before round.
-    Games should be enriched with _afl via enrich_games_with_afl first.
+  Games should be enriched with _afl attendance via enrich_games_with_afl first.
     """
     completed = [g for g in games if g.get("complete") == 100]
     by_round = defaultdict(list)
     for g in completed:
-        by_round[_round_group_key(g)].append(g)
+        key = (g["year"], g["round"], g.get("roundname") or f"Round {g['round']}")
+        by_round[key].append(g)
 
     events = []
     for (season, round_num, round_label), round_games in sorted(by_round.items()):
         match_rows = []
-        squiggle_rounds = set()
         for team_id in QUATTRO_TEAM_IDS:
             team_games = [g for g in round_games if g["hteamid"] == team_id or g["ateamid"] == team_id]
             if len(team_games) != 1:
                 match_rows = None
                 break
             game = team_games[0]
-            squiggle_rounds.add(game["round"])
             row = _game_for_team(game, team_id)
             if not row or not row["won"]:
                 match_rows = None
                 break
-            # Ladder snapshots follow Squiggle's round numbering
             row["ladder_position_before"] = ladder_lookup(season, game["round"], team_id)
             match_rows.append(row)
 
@@ -119,8 +97,6 @@ def find_quattro_events(games: list, ladder_lookup) -> list:
                     "season": season,
                     "round": round_num,
                     "round_label": round_label,
-                    "squiggle_round": min(squiggle_rounds) if len(squiggle_rounds) == 1 else None,
-                    "squiggle_rounds": sorted(squiggle_rounds),
                     "round_type": "finals" if is_final else "home_away",
                     "is_final": bool(is_final),
                     "matches": sorted(match_rows, key=lambda m: QUATTRO_TEAM_IDS[m["team_id"]]),
