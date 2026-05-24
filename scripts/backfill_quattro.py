@@ -74,7 +74,9 @@ def main():
     for ev in events:
         year = ev["season"]
         for m in ev["matches"]:
-            crowd = lookup_attendance(att_cache, year, m["team"], m["opponent"])
+            crowd = lookup_attendance(
+                att_cache, year, m["team"], m["opponent"], m.get("date")
+            )
             m["attendance"] = crowd
 
     _enrich_gaps(events)

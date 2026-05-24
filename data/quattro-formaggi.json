@@ -59,7 +59,7 @@
           "game_id": 9607,
           "date": "2006-04-02 17:10:00",
           "ladder_position_before": null,
-          "attendance": 24113
+          "attendance": 31139
         },
         {
           "team": "Essendon",
@@ -73,7 +73,7 @@
           "game_id": 9604,
           "date": "2006-04-01 19:10:00",
           "ladder_position_before": null,
-          "attendance": 25465
+          "attendance": 45355
         },
         {
           "team": "Geelong",
@@ -87,7 +87,7 @@
           "game_id": 9603,
           "date": "2006-04-01 14:10:00",
           "ladder_position_before": null,
-          "attendance": 28055
+          "attendance": 23029
         },
         {
           "team": "Hawthorn",
@@ -101,7 +101,7 @@
           "game_id": 9606,
           "date": "2006-04-02 13:10:00",
           "ladder_position_before": null,
-          "attendance": 35017
+          "attendance": 13862
         }
       ],
       "event_date": "2006-04-02",
@@ -168,7 +168,7 @@
           "game_id": 9493,
           "date": "2007-06-03 12:40:00",
           "ladder_position_before": 4,
-          "attendance": 15264
+          "attendance": 23945
         }
       ],
       "event_date": "2007-06-03",
@@ -207,7 +207,7 @@
           "game_id": 9319,
           "date": "2008-06-13 19:40:00",
           "ladder_position_before": 14,
-          "attendance": 35288
+          "attendance": 33386
         },
         {
           "team": "Geelong",
@@ -302,7 +302,7 @@
           "game_id": 9335,
           "date": "2008-06-27 19:40:00",
           "ladder_position_before": 3,
-          "attendance": 37040
+          "attendance": 29138
         }
       ],
       "event_date": "2008-07-04",
@@ -341,7 +341,7 @@
           "game_id": 9079,
           "date": "2009-04-25 14:20:00",
           "ladder_position_before": 9,
-          "attendance": 77699
+          "attendance": 84829
         },
         {
           "team": "Geelong",
@@ -355,7 +355,7 @@
           "game_id": 9083,
           "date": "2009-04-26 13:10:00",
           "ladder_position_before": 2,
-          "attendance": 34274
+          "attendance": 15580
         },
         {
           "team": "Hawthorn",
@@ -369,7 +369,7 @@
           "game_id": 9080,
           "date": "2009-04-25 17:20:00",
           "ladder_position_before": 13,
-          "attendance": 31441
+          "attendance": 17880
         }
       ],
       "event_date": "2009-04-26",
@@ -408,7 +408,7 @@
           "game_id": 8923,
           "date": "2010-05-16 16:40:00",
           "ladder_position_before": 12,
-          "attendance": 37165
+          "attendance": 39204
         },
         {
           "team": "Geelong",
@@ -422,7 +422,7 @@
           "game_id": 8920,
           "date": "2010-05-15 19:10:00",
           "ladder_position_before": 3,
-          "attendance": 24508
+          "attendance": 33629
         },
         {
           "team": "Hawthorn",
@@ -461,7 +461,7 @@
           "game_id": 8938,
           "date": "2010-05-30 14:10:00",
           "ladder_position_before": 6,
-          "attendance": 35925
+          "attendance": 29175
         },
         {
           "team": "Essendon",
@@ -475,7 +475,7 @@
           "game_id": 8932,
           "date": "2010-05-28 19:40:00",
           "ladder_position_before": 10,
-          "attendance": 26776
+          "attendance": 45742
         },
         {
           "team": "Geelong",
@@ -503,7 +503,7 @@
           "game_id": 8937,
           "date": "2010-05-30 13:10:00",
           "ladder_position_before": 13,
-          "attendance": 29431
+          "attendance": 36003
         }
       ],
       "event_date": "2010-05-30",
@@ -528,7 +528,7 @@
           "game_id": 1194,
           "date": "2011-05-09 19:20:00",
           "ladder_position_before": 3,
-          "attendance": 55606
+          "attendance": 41576
         },
         {
           "team": "Essendon",
@@ -542,7 +542,7 @@
           "game_id": 1185,
           "date": "2011-05-08 13:10:00",
           "ladder_position_before": 5,
-          "attendance": 38253
+          "attendance": 33631
         },
         {
           "team": "Geelong",
@@ -637,7 +637,7 @@
           "game_id": 1378,
           "date": "2011-08-07 14:10:00",
           "ladder_position_before": 3,
-          "attendance": 52052
+          "attendance": 16820
         }
       ],
       "event_date": "2011-08-07",
@@ -824,7 +824,7 @@
           "game_id": 1895,
           "date": "2013-04-19 19:50:00",
           "ladder_position_before": 5,
-          "attendance": 28459
+          "attendance": 31060
         },
         {
           "team": "Hawthorn",
@@ -838,7 +838,7 @@
           "game_id": 1896,
           "date": "2013-04-20 13:45:00",
           "ladder_position_before": 6,
-          "attendance": 100007
+          "attendance": 12619
         }
       ],
       "event_date": "2013-04-20",
@@ -877,7 +877,7 @@
           "game_id": 1904,
           "date": "2013-04-25 14:40:00",
           "ladder_position_before": 1,
-          "attendance": 69821
+          "attendance": 93373
         },
         {
           "team": "Geelong",
@@ -905,7 +905,7 @@
           "game_id": 1922,
           "date": "2013-04-28 16:40:00",
           "ladder_position_before": 4,
-          "attendance": 33039
+          "attendance": 42103
         }
       ],
       "event_date": "2013-04-28",
@@ -944,7 +944,7 @@
           "game_id": 1924,
           "date": "2013-05-04 13:45:00",
           "ladder_position_before": 1,
-          "attendance": 10783
+          "attendance": 30143
         },
         {
           "team": "Geelong",
@@ -1011,7 +1011,7 @@
           "game_id": 1971,
           "date": "2013-05-25 19:45:00",
           "ladder_position_before": 3,
-          "attendance": 60979
+          "attendance": 84234
         },
         {
           "team": "Geelong",
@@ -1025,7 +1025,7 @@
           "game_id": 1965,
           "date": "2013-05-25 13:45:00",
           "ladder_position_before": 2,
-          "attendance": 52744
+          "attendance": 21309
         },
         {
           "team": "Hawthorn",
@@ -1173,7 +1173,7 @@
           "game_id": 2491,
           "date": "2014-07-26 19:40:00",
           "ladder_position_before": 3,
-          "attendance": 99454
+          "attendance": 72768
         }
       ],
       "event_date": "2014-07-26",
@@ -1466,7 +1466,7 @@
           "game_id": 35749,
           "date": "2024-04-20 16:35:00",
           "ladder_position_before": 6,
-          "attendance": 11730
+          "attendance": 40474
         },
         {
           "team": "Essendon",
@@ -1480,7 +1480,7 @@
           "game_id": 35747,
           "date": "2024-04-19 19:40:00",
           "ladder_position_before": 9,
-          "attendance": 36020
+          "attendance": 46700
         },
         {
           "team": "Geelong",
@@ -1494,7 +1494,7 @@
           "game_id": 35750,
           "date": "2024-04-20 19:30:00",
           "ladder_position_before": 2,
-          "attendance": 93066
+          "attendance": 30429
         },
         {
           "team": "Hawthorn",
@@ -1508,7 +1508,7 @@
           "game_id": 35753,
           "date": "2024-04-21 16:05:00",
           "ladder_position_before": 17,
-          "attendance": 11392
+          "attendance": 30648
         }
       ],
       "event_date": "2024-04-21",
@@ -1540,7 +1540,7 @@
       2024,
       2025
     ],
-    "last_backfill": "2026-05-24 03:16 UTC",
+    "last_backfill": "2026-05-24 03:21 UTC",
     "attendance_note": "Crowd figures from AFL Tables when a match can be matched."
   }
 }
