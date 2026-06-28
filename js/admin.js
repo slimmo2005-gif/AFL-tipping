@@ -1,5 +1,5 @@
 import { publicUrl, assetUrl } from './config.js';
-import { fetchAflLadder } from './api.js';
+import { fetchAflLadder, fetchCurrentRound } from './api.js';
 import { initNav, renderAlerts } from './nav.js';
 import {
   loadStore,
@@ -39,10 +39,11 @@ statusEl.innerHTML = participants
   .replaceAll(`<${D}`, '<div')
   .replaceAll(`</${D}>`, '</div>');
 
+const roundInput = document.getElementById('roundNumber');
 const roundsSection = document.getElementById('roundsSection');
 if (rounds.length) {
   const last = rounds[rounds.length - 1];
-  document.getElementById('roundNumber').value = last.round_number + 1;
+  roundInput.value = last.round_number + 1;
   const links = rounds
     .map(
       (r) =>
@@ -59,6 +60,13 @@ if (rounds.length) {
     .replaceAll(`<${D}`, '<div')
     .replaceAll(`</${D}>`, '</div>');
 }
+
+// Default the round field to the AFL's actual current round (prevents drift).
+fetchCurrentRound().then((current) => {
+  if (current && document.activeElement !== roundInput) {
+    roundInput.value = current;
+  }
+});
 
 document.getElementById('ladderForm').addEventListener('submit', async (e) => {
   e.preventDefault();

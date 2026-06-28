@@ -316,6 +316,11 @@
       "round_number": 11,
       "fetched_at": "2026-06-14 09:33",
       "ladder_json": "[{\"position\":1,\"team\":\"Fremantle\"},{\"position\":2,\"team\":\"Sydney Swans\"},{\"position\":3,\"team\":\"Geelong Cats\"},{\"position\":4,\"team\":\"Melbourne\"},{\"position\":5,\"team\":\"Hawthorn\"},{\"position\":6,\"team\":\"Adelaide Crows\"},{\"position\":7,\"team\":\"Brisbane Lions\"},{\"position\":8,\"team\":\"Western Bulldogs\"},{\"position\":9,\"team\":\"Gold Coast SUNS\"},{\"position\":10,\"team\":\"St Kilda\"},{\"position\":11,\"team\":\"GWS GIANTS\"},{\"position\":12,\"team\":\"North Melbourne\"},{\"position\":13,\"team\":\"Collingwood\"},{\"position\":14,\"team\":\"Carlton\"},{\"position\":15,\"team\":\"Port Adelaide\"},{\"position\":16,\"team\":\"West Coast Eagles\"},{\"position\":17,\"team\":\"Richmond\"},{\"position\":18,\"team\":\"Essendon\"}]"
+    },
+    {
+      "round_number": 16,
+      "fetched_at": "2026-06-28 22:21",
+      "ladder_json": "[{\"position\": 1, \"team\": \"Fremantle\"}, {\"position\": 2, \"team\": \"Sydney Swans\"}, {\"position\": 3, \"team\": \"Hawthorn\"}, {\"position\": 4, \"team\": \"Geelong Cats\"}, {\"position\": 5, \"team\": \"Brisbane Lions\"}, {\"position\": 6, \"team\": \"Adelaide Crows\"}, {\"position\": 7, \"team\": \"Melbourne\"}, {\"position\": 8, \"team\": \"Western Bulldogs\"}, {\"position\": 9, \"team\": \"North Melbourne\"}, {\"position\": 10, \"team\": \"Collingwood\"}, {\"position\": 11, \"team\": \"Gold Coast SUNS\"}, {\"position\": 12, \"team\": \"Carlton\"}, {\"position\": 13, \"team\": \"St Kilda\"}, {\"position\": 14, \"team\": \"GWS GIANTS\"}, {\"position\": 15, \"team\": \"Port Adelaide\"}, {\"position\": 16, \"team\": \"West Coast Eagles\"}, {\"position\": 17, \"team\": \"Richmond\"}, {\"position\": 18, \"team\": \"Essendon\"}]"
     }
   ]
 }

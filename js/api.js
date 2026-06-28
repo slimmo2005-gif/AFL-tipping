@@ -13,6 +13,11 @@ function parseLadder(data) {
     .sort((a, b) => a.position - b.position);
 }
 
+// The AFL API reports the authoritative current round number.
+function currentRoundFromData(data) {
+  return data?.round?.roundNumber ?? data?.compSeason?.currentRoundNumber ?? null;
+}
+
 async function fetchJson(url, options = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -26,19 +31,17 @@ async function fetchJson(url, options = {}) {
 }
 
 async function fetchDirect() {
-  return parseLadder(await fetchJson(AFL_LADDER_URL));
+  return fetchJson(AFL_LADDER_URL);
 }
 
 // Returns the AFL JSON verbatim with permissive CORS headers.
 async function fetchViaCorsSh() {
-  const proxyUrl = `https://proxy.cors.sh/${AFL_LADDER_URL}`;
-  return parseLadder(await fetchJson(proxyUrl));
+  return fetchJson(`https://proxy.cors.sh/${AFL_LADDER_URL}`);
 }
 
 // AllOrigins "raw" passes the body through unchanged (more reliable than /get).
 async function fetchViaAllOriginsRaw() {
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(AFL_LADDER_URL)}`;
-  return parseLadder(await fetchJson(proxyUrl));
+  return fetchJson(`https://api.allorigins.win/raw?url=${encodeURIComponent(AFL_LADDER_URL)}`);
 }
 
 // AllOrigins "get" wraps the body in JSON; used as a secondary fallback.
@@ -49,16 +52,15 @@ async function fetchViaAllOrigins() {
     throw new Error(`origin returned ${wrapper.status.http_code}`);
   }
   if (!wrapper.contents) throw new Error('empty proxy response');
-  return parseLadder(JSON.parse(wrapper.contents));
+  return JSON.parse(wrapper.contents);
 }
 
 async function fetchViaCodetabs() {
-  const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(AFL_LADDER_URL)}`;
-  return parseLadder(await fetchJson(proxyUrl));
+  return fetchJson(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(AFL_LADDER_URL)}`);
 }
 
-/** Fetch ladder: direct (local), then CORS proxies for GitHub Pages. */
-export async function fetchAflLadder() {
+/** Fetch raw AFL data: direct (local), then CORS proxies for GitHub Pages. */
+async function fetchAflData() {
   const attempts = [
     ['AFL API', fetchDirect],
     ['cors.sh proxy', fetchViaCorsSh],
@@ -70,13 +72,34 @@ export async function fetchAflLadder() {
   const errors = [];
   for (const [name, fn] of attempts) {
     try {
-      return await fn();
+      const data = await fn();
+      parseLadder(data); // validate before accepting this source
+      return data;
     } catch (err) {
       const msg = err.name === 'AbortError' ? 'timed out' : err.message;
       errors.push(`${name}: ${msg}`);
     }
   }
   throw new Error(errors.join(' · '));
+}
+
+export async function fetchAflLadder() {
+  return parseLadder(await fetchAflData());
+}
+
+/** Ladder plus the AFL's authoritative current round number. */
+export async function fetchAflLadderAndRound() {
+  const data = await fetchAflData();
+  return { ladder: parseLadder(data), currentRound: currentRoundFromData(data) };
+}
+
+/** Best-effort current round number (null if it can't be fetched). */
+export async function fetchCurrentRound() {
+  try {
+    return currentRoundFromData(await fetchAflData());
+  } catch {
+    return null;
+  }
 }
 
 export async function getTeams() {
