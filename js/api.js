@@ -4,7 +4,10 @@ const AFL_LADDER_URL = `https://aflapi.afl.com.au/afl/v2/compseasons/${AFL_COMP_
 const FETCH_TIMEOUT_MS = 25000;
 
 function parseLadder(data) {
-  const entries = data.ladders[0].entries;
+  const entries = data?.ladders?.[0]?.entries;
+  if (!Array.isArray(entries) || entries.length === 0) {
+    throw new Error('no ladder entries in response');
+  }
   return entries
     .map((e) => ({ position: e.position, team: e.team.name }))
     .sort((a, b) => a.position - b.position);
@@ -26,11 +29,19 @@ async function fetchDirect() {
   return parseLadder(await fetchJson(AFL_LADDER_URL));
 }
 
-async function fetchViaCodetabs() {
-  const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(AFL_LADDER_URL)}`;
+// Returns the AFL JSON verbatim with permissive CORS headers.
+async function fetchViaCorsSh() {
+  const proxyUrl = `https://proxy.cors.sh/${AFL_LADDER_URL}`;
   return parseLadder(await fetchJson(proxyUrl));
 }
 
+// AllOrigins "raw" passes the body through unchanged (more reliable than /get).
+async function fetchViaAllOriginsRaw() {
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(AFL_LADDER_URL)}`;
+  return parseLadder(await fetchJson(proxyUrl));
+}
+
+// AllOrigins "get" wraps the body in JSON; used as a secondary fallback.
 async function fetchViaAllOrigins() {
   const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(AFL_LADDER_URL)}`;
   const wrapper = await fetchJson(proxyUrl);
@@ -41,12 +52,19 @@ async function fetchViaAllOrigins() {
   return parseLadder(JSON.parse(wrapper.contents));
 }
 
+async function fetchViaCodetabs() {
+  const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(AFL_LADDER_URL)}`;
+  return parseLadder(await fetchJson(proxyUrl));
+}
+
 /** Fetch ladder: direct (local), then CORS proxies for GitHub Pages. */
 export async function fetchAflLadder() {
   const attempts = [
     ['AFL API', fetchDirect],
+    ['cors.sh proxy', fetchViaCorsSh],
+    ['AllOrigins (raw)', fetchViaAllOriginsRaw],
+    ['AllOrigins (get)', fetchViaAllOrigins],
     ['Codetabs proxy', fetchViaCodetabs],
-    ['AllOrigins proxy', fetchViaAllOrigins],
   ];
 
   const errors = [];
