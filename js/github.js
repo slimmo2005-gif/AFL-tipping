@@ -4,6 +4,7 @@ export const GITHUB_OWNER = 'slimmo2005-gif';
 export const GITHUB_REPO = 'AFL-tipping';
 export const GITHUB_BRANCH = 'main';
 export const GITHUB_STORE_PATH = 'data/store.json';
+export const GITHUB_LADDER_WORKFLOW = 'update-ladder.yml';
 const TOKEN_KEY = 'afl_github_token';
 
 export function getGitHubToken() {
@@ -86,6 +87,48 @@ export async function pushStoreToGitHub(store, commitMessage) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
+}
+
+/** Run the server-side ladder workflow (no browser CORS proxies needed). */
+export async function triggerLadderWorkflow(roundNumber, seasonYear = new Date().getFullYear()) {
+  const workflow = encodeURIComponent(GITHUB_LADDER_WORKFLOW);
+  return githubApi(
+    `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${workflow}/dispatches`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ref: GITHUB_BRANCH,
+        inputs: {
+          round_number: String(roundNumber),
+          season_year: String(seasonYear),
+        },
+      }),
+    },
+  );
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Poll the live store.json until a round appears (after GitHub Action commits). */
+export async function pollForRoundOnSite(roundNumber, { timeoutMs = 120000, intervalMs = 4000 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const res = await fetch(
+      `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_STORE_PATH}?t=${Date.now()}`,
+    );
+    if (res.ok) {
+      const store = await res.json();
+      const hit = store.rounds?.find((r) => r.round_number === roundNumber);
+      if (hit) return hit;
+    }
+    await sleep(intervalMs);
+  }
+  throw new Error(
+    `Timed out waiting for round ${roundNumber} on GitHub. Check Actions tab — the workflow may still be running.`,
+  );
 }
 
 export function initGitHubSettings() {

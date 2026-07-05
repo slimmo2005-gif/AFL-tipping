@@ -81,7 +81,7 @@ ADMIN_VIEW = f"""
       <{TAG} class="card-body">
         <p class="small text-muted mb-2">
           Create a <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">fine-grained token</a>
-          for repo <strong>AFL-tipping</strong> with <em>Contents: Read and write</em>.
+          for repo <strong>AFL-tipping</strong> with <em>Contents: Read and write</em> and <em>Actions: Read and write</em> (needed for ladder fetch).
         </p>
         <{TAG} class="row g-2 align-items-end">
           <{TAG} class="col-md-8">

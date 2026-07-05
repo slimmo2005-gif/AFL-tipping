@@ -9,7 +9,7 @@ import {
   predictionCount,
   downloadStoreJson,
 } from './storage.js';
-import { hasGitHubToken, pushStoreToGitHub, initGitHubSettings } from './github.js';
+import { hasGitHubToken, pushStoreToGitHub, initGitHubSettings, triggerLadderWorkflow, pollForRoundOnSite } from './github.js';
 import { checkQuattroRound } from './quattro-check.js';
 
 initNav('admin');
@@ -92,6 +92,44 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
   btn.disabled = true;
 
   try {
+    const season = new Date().getFullYear();
+
+    // Primary: GitHub Action fetches AFL server-side (avoids broken CORS proxies in browser).
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting server update…';
+    try {
+      await triggerLadderWorkflow(roundNumber, season);
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Waiting for GitHub…';
+      await pollForRoundOnSite(roundNumber);
+      localStorage.removeItem('afl_tipping_store_v1');
+
+      let qfMsg = '';
+      try {
+        const qf = await checkQuattroRound(season, roundNumber);
+        qfMsg = qf.isQuattro
+          ? ` <strong>Quattro Formaggi!</strong> All four won — history updated by the workflow. <a href="${assetUrl('quattro-formaggi.html')}">View page</a>`
+          : ` Quattro Formaggi: not this round (${qf.reason}).`;
+      } catch {
+        qfMsg = ' Quattro check skipped in browser.';
+      }
+
+      renderAlerts('alerts', [
+        {
+          type: 'success',
+          text: `Round ${roundNumber} saved via GitHub Actions.${qfMsg} <a href="${publicUrl(`?round=${roundNumber}`)}">View leaderboard</a>`,
+        },
+      ]);
+      setTimeout(() => location.reload(), 1500);
+      return;
+    } catch (workflowErr) {
+      const msg = String(workflowErr.message || workflowErr).toLowerCase();
+      const needsActions =
+        msg.includes('403') ||
+        msg.includes('resource not accessible') ||
+        msg.includes('actions');
+      if (!needsActions) throw workflowErr;
+      // Token lacks Actions permission — fall back to browser fetch + Contents API.
+    }
+
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Fetching ladder…';
     const ladder = await fetchAflLadder();
     saveRound(store, roundNumber, ladder);
@@ -102,7 +140,6 @@ document.getElementById('ladderForm').addEventListener('submit', async (e) => {
 
     let qfMsg = '';
     try {
-      const season = new Date().getFullYear();
       const qf = await checkQuattroRound(season, roundNumber);
       qfMsg = qf.isQuattro
         ? ` <strong>Quattro Formaggi!</strong> All four won — run the GitHub Action or <code>scripts/check_quattro_round.py</code> to add to history. <a href="${assetUrl('quattro-formaggi.html')}">View page</a>`

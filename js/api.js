@@ -36,7 +36,17 @@ async function fetchDirect() {
 
 // Returns the AFL JSON verbatim with permissive CORS headers.
 async function fetchViaCorsSh() {
-  return fetchJson(`https://proxy.cors.sh/${AFL_LADDER_URL}`);
+  const proxyUrl = `https://proxy.cors.sh/${AFL_LADDER_URL}`;
+  let lastErr;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      return await fetchJson(proxyUrl);
+    } catch (err) {
+      lastErr = err;
+      if (attempt === 0) await new Promise((r) => setTimeout(r, 800));
+    }
+  }
+  throw lastErr;
 }
 
 // AllOrigins "raw" passes the body through unchanged (more reliable than /get).
@@ -59,15 +69,23 @@ async function fetchViaCodetabs() {
   return fetchJson(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(AFL_LADDER_URL)}`);
 }
 
-/** Fetch raw AFL data: direct (local), then CORS proxies for GitHub Pages. */
+/** Fetch raw AFL data: CORS proxies for GitHub Pages, then direct (local dev). */
 async function fetchAflData() {
-  const attempts = [
-    ['AFL API', fetchDirect],
-    ['cors.sh proxy', fetchViaCorsSh],
-    ['AllOrigins (raw)', fetchViaAllOriginsRaw],
-    ['AllOrigins (get)', fetchViaAllOrigins],
-    ['Codetabs proxy', fetchViaCodetabs],
-  ];
+  const onGitHubPages = /github\.io$/i.test(location.hostname);
+  const attempts = onGitHubPages
+    ? [
+        ['cors.sh proxy', fetchViaCorsSh],
+        ['AllOrigins (raw)', fetchViaAllOriginsRaw],
+        ['AllOrigins (get)', fetchViaAllOrigins],
+        ['Codetabs proxy', fetchViaCodetabs],
+      ]
+    : [
+        ['AFL API', fetchDirect],
+        ['cors.sh proxy', fetchViaCorsSh],
+        ['AllOrigins (raw)', fetchViaAllOriginsRaw],
+        ['AllOrigins (get)', fetchViaAllOrigins],
+        ['Codetabs proxy', fetchViaCodetabs],
+      ];
 
   const errors = [];
   for (const [name, fn] of attempts) {
@@ -80,7 +98,9 @@ async function fetchAflData() {
       errors.push(`${name}: ${msg}`);
     }
   }
-  throw new Error(errors.join(' · '));
+  throw new Error(
+    `${errors.join(' · ')}. Try again or use Fetch — it now runs via GitHub Actions when your token has Actions permission.`,
+  );
 }
 
 export async function fetchAflLadder() {

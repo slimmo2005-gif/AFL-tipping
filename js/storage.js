@@ -68,9 +68,13 @@ export async function loadStore() {
   }
 
   // Merge newer rounds from the committed store (after someone pushes to GitHub)
-  if (shared?.rounds?.length > local.rounds.length) {
-    local.rounds = shared.rounds;
-    saveStore(local);
+  if (shared?.rounds?.length) {
+    const localMax = local.rounds.reduce((m, r) => Math.max(m, r.round_number), 0);
+    const sharedMax = shared.rounds.reduce((m, r) => Math.max(m, r.round_number), 0);
+    if (sharedMax > localMax || shared.rounds.length > local.rounds.length) {
+      local.rounds = shared.rounds;
+      saveStore(local);
+    }
   }
   return local;
 }
